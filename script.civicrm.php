@@ -90,6 +90,11 @@ class Com_CiviCRMInstallerScript {
     $installer = new JInstaller();
     $plgArray  = array();
 
+    // Joomla 3.0 no longer supports DS
+    if (!defined('DS')) {
+      define('DS', DIRECTORY_SEPARATOR);
+    }
+
     foreach ($manifest->plugins->plugin as $plugin) {
       $attributes = $plugin->attributes();
       $plg = $source . DS . $attributes['folder'] . DS . $attributes['plugin'];
@@ -98,18 +103,33 @@ class Com_CiviCRMInstallerScript {
     }
 
     $db              = JFactory::getDbo();
-    $tableExtensions = $db->nameQuote("#__extensions");
-    $columnElement   = $db->nameQuote("element");
-    $columnType      = $db->nameQuote("type");
-    $columnEnabled   = $db->nameQuote("enabled");
+
+    // In joomla 3.0, they decided to change the below name to quoteName
+    // so we'll do a switch and check which fn name to use
+    if (method_exists($db, 'nameQuote')) {
+      $quoteFn = 'nameQuote';
+    }
+    else if (method_exists($db, 'quoteName')) {
+      $quoteFn = 'quoteName';
+    }
+    else {
+      echo "Could not determine name of the quote function in Joomla!";
+      exit();
+    }
+
+    $tableExtensions = $db->$quoteFn("#__extensions");
+    $columnElement   = $db->$quoteFn("element");
+    $columnType      = $db->$quoteFn("type");
+    $columnEnabled   = $db->$quoteFn("enabled");
     $plgList         = implode(',', $plgArray);
 
     // Enable plugins
-    $db->setQuery("UPDATE $tableExtensions
-                        SET $columnEnabled = 1
-                        WHERE $columnElement IN ($plgList)
-                        AND $columnType = 'plugin'"
-    );
+    $db->setQuery("
+UPDATE $tableExtensions
+SET    $columnEnabled = 1
+WHERE  $columnElement IN ($plgList)
+AND    $columnType = 'plugin'
+");
     $db->query();
 
     echo $content;
