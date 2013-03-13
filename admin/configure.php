@@ -34,7 +34,7 @@ function civicrm_setup() {
 
   $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
 
-  $jConfig = JFactory::getConfig();
+  $jConfig = new JConfig();
   set_time_limit(4000);
 
   // Path to the archive
@@ -70,7 +70,7 @@ function civicrm_setup() {
   $db->setQuery(' SELECT count( * )
 FROM information_schema.tables
 WHERE table_name LIKE "civicrm_domain"
-AND table_schema = "' . $jConfig->getValue('config.db') . '" ');
+AND table_schema = "' . $jConfig->db . '" ');
 
   global $civicrmUpgrade;
   $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
