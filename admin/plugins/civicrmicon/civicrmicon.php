@@ -39,13 +39,31 @@ class plgQuickiconCivicrmicon extends JPlugin {
    */
   public function onGetIcons($context) {
     jimport('joomla.environment.uri');
-    return array(
+    $icon = array(
       array(
         'link' => 'index.php?option=com_civicrm',
         'image' => JURI::base() . 'components/com_civicrm/civicrm/i/smallLogo.png',
         'text' => 'CiviCRM',
         'id' => 'plg_quickicon_civicrmicon',
-      ));
+      )
+    );
+
+    //image must be handled via css class in J3.0
+    if (version_compare(JVERSION, '3.0', 'ge')) {
+      $img = JURI::root() . 'plugins/quickicon/civicrmicon/smallLogo14.png';
+      $css = '
+        .icon-civicrm, .icon-civicrm-open {
+          background-image:url("'.$img.'");
+        }
+      ';
+      $document =& JFactory::getDocument();
+      $document->addStyleDeclaration( $css );
+      $icon[0]['image'] = 'civicrm';
+    } else {
+      $icon[0]['image'] = JURI::base() . 'components/com_civicrm/civicrm/i/smallLogo.png';
+    }
+
+    return $icon;
   }
 }
 
