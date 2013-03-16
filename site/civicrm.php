@@ -67,11 +67,11 @@ function civicrm_invoke() {
   $args = explode('/', trim($task));
 
   CRM_Core_Resources::singleton()->addCoreResources();
-  CRM_Utils_System_Joomla::addHTMLHead();
 
   $user = JFactory::getUser();
   CRM_Core_BAO_UFMatch::synchronize($user, FALSE, 'Joomla', 'Individual', TRUE);
 
+  define('CIVICRM_UF_HEAD', TRUE);
   CRM_Core_Invoke::invoke($args);
 }
 
