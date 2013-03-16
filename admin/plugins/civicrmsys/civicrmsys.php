@@ -14,6 +14,16 @@ class plgSystemCivicrmsys extends JPlugin
 {
   public $scheduled;
 
+  public function onBeforeCompileHead() {
+    global $civicrm_root;
+    if (empty($civicrm_root)) {
+      return;
+    }
+    if ($region = CRM_Core_Region::instance('html-header', FALSE)) {
+      CRM_Utils_System::addHTMLHead($region->render(''));
+    }
+  }
+
   /**
    * After extension source code has been installed
    *

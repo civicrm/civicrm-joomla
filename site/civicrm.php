@@ -73,9 +73,5 @@ function civicrm_invoke() {
 
   define('CIVICRM_UF_HEAD', TRUE);
   CRM_Core_Invoke::invoke($args);
-  // TODO: Move to plgSystemCivicrmsys (maybe onBeforeCompileHead) and test installation/upgrade
-  if ($region = CRM_Core_Region::instance('html-header', FALSE)) {
-    CRM_Utils_System::addHTMLHead($region->render(''));
-  }
 }
 
