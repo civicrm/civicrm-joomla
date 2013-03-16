@@ -12,5 +12,6 @@
 	<files>
 		<filename plugin="civicrmicon">civicrmicon.php</filename>
 		<filename>index.html</filename>
+    <filename>smallLogo14.png</filename>
 	</files>
 </extension>
