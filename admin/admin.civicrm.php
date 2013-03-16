@@ -91,6 +91,7 @@ function civicrm_invoke() {
     $_GET['reset'] = 1;
     $args = array('civicrm', 'dashboard');
   }
+  define('CIVICRM_UF_HEAD', TRUE);
   CRM_Core_Invoke::invoke($args);
 }
 
