@@ -53,6 +53,9 @@ function plugin_init() {
   JPluginHelper::importPlugin('civicrm');
   $app = JFactory::getApplication();
   $app->triggerEvent('onCiviLoad');
+
+  // set page title
+  JToolBarHelper::title('CiviCRM');
 }
 
 function civicrm_invoke() {
