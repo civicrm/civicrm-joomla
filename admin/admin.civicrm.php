@@ -39,12 +39,30 @@ include_once CIVICRM_SETTINGS_PATH;
 
 civicrm_invoke();
 
+/**
+ * This was the original name of the initialization function and is
+ * retained for backward compatibility
+ */
 function civicrm_init() {
+  return civicrm_initialize();
+}
+
+/**
+ * Initialize CiviCRM. Call this function from other modules too if
+ * they use the CiviCRM API.
+ */
+function civicrm_initialize() {
+  // Check for php version and ensure its greater than minPhpVersion
+  $minPhpVersion = '5.3.3';
+  if (version_compare(PHP_VERSION, $minPhpVersion) < 0) {
+    echo "CiviCRM requires PHP Version $minPhpVersion or greater. You are running PHP Version " . PHP_VERSION . "<p>";
+    exit();
+  }
+
   require_once 'CRM/Core/ClassLoader.php';
   CRM_Core_ClassLoader::singleton()->register();
 
   require_once 'PEAR.php';
-
   $config = CRM_Core_Config::singleton();
 }
 
@@ -59,7 +77,7 @@ function plugin_init() {
 }
 
 function civicrm_invoke() {
-  civicrm_init();
+  civicrm_initialize();
 
   plugin_init();
 
