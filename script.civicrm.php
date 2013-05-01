@@ -44,7 +44,7 @@ class Com_CiviCRMInstallerScript {
   <table width="100%" border="0">
     <tr>
         <td>
-            <strong>CiviCRM component files have been UPGRADED <font color="green">succesfully</font></strong>.
+            <strong>CiviCRM component files have been UPGRADED <font color="green">successfully</font></strong>.
             <p><strong>Please run the <a href="' . $upgradeUrl . '">CiviCRM Database Upgrade Utility</a> now. This utility will check your database and perform any needed upgrades.</strong></p>
             <p>Also review the <a href="' . $docLink . '">Upgrade Guide</a> for any additional steps required to complete this upgrade.</p>
         </td>
@@ -64,7 +64,7 @@ class Com_CiviCRMInstallerScript {
   <table width="100%" border="0">
     <tr>
         <td>
-            <strong>CiviCRM component files and database tables have been INSTALLED <font color="green">succesfully</font></strong>.
+            <strong>CiviCRM component files and database tables have been INSTALLED <font color="green">successfully</font></strong>.
             <p><strong>Please review the ' . $docLink . ' for any additional steps required to complete the installation.</strong></p>
             <p><strong>Then use the <a href="' . $configTaskUrl . '">Configuration Checklist</a> to review and configure CiviCRM settings for your new site.</strong></p>
             <p><strong>Additional Resources:</strong>
