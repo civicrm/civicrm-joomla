@@ -56,7 +56,7 @@ class plgQuickiconCivicrmicon extends JPlugin {
           background-image:url("'.$img.'");
         }
       ';
-      $document =& JFactory::getDocument();
+      $document = JFactory::getDocument();
       $document->addStyleDeclaration( $css );
       $icon[0]['image'] = 'civicrm';
     } else {
