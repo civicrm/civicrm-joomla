@@ -171,7 +171,7 @@ function civicrm_source($fileName, $lineMode = FALSE) {
     foreach ($queries as $query) {
       $query = trim($query);
       if (!empty($query)) {
-        $res = &$db->query($query);
+        $res =& $db->query($query);
         if (PEAR::isError($res)) {
           die("Cannot execute $query: " . $res->getMessage());
         }
@@ -185,7 +185,7 @@ function civicrm_source($fileName, $lineMode = FALSE) {
       $string = ereg_replace("\n\-\-[^\n]*\n", "\n", $string);
       $string = trim($string);
       if (!empty($string)) {
-        $res = &$db->query($string);
+        $res =& $db->query($string);
         if (PEAR::isError($res)) {
           die("Cannot execute $string: " . $res->getMessage());
         }
