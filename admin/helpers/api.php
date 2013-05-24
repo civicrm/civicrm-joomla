@@ -14,7 +14,9 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.helper');
 class CivicrmHelperApi {
   function civiInit() {
-    define('CIVICRM_SETTINGS_PATH', JPATH_BASE . DS . 'administrator' . DS . 'components' . DS . 'com_civicrm' . DS . 'civicrm.settings.php');
+    if (!defined('CIVICRM_SETTINGS_PATH')) {
+      define('CIVICRM_SETTINGS_PATH', JPATH_BASE . '/components/com_civicrm/civicrm.settings.php');
+    }
     require_once CIVICRM_SETTINGS_PATH;
 
     require_once 'CRM/Core/Config.php';
