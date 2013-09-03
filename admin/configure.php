@@ -225,7 +225,7 @@ function civicrm_config($frontend = FALSE, $siteKey) {
     'templates' . DIRECTORY_SEPARATOR .
     'CRM' . DIRECTORY_SEPARATOR .
     'common' . DIRECTORY_SEPARATOR .
-    'civicrm.settings.php.tpl'
+    'civicrm.settings.php.template'
   );
   foreach ($params as $key => $value) {
     $str = str_replace('%%' . $key . '%%', $value, $str);
