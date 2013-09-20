@@ -55,7 +55,6 @@ class JFormFieldCiviEvents extends JFormField {
     $params = array(
       'version' => '3',
       'is_active' => 1,
-      'isCurrent' => 1,
       'return.title' => 1,
       'return.id' => 1,
       'return.end_date' => 1,
@@ -66,11 +65,7 @@ class JFormFieldCiviEvents extends JFormField {
     $options     = array();
     $options[]   = JHTML::_('select.option', '', JText::_('- Select Event -'));
     foreach ($events['values'] as $event) {
-      if (strtotime($event['start_date']) >= strtotime($currentdate) ||
-        strtotime($event['end_date']) >= strtotime($currentdate)
-      ) {
-        $options[] = JHTML::_('select.option', $event['id'], $event['event_title']);
-      }
+      $options[] = JHTML::_('select.option', $event['id'], $event['event_title']);
     }
 
     return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
