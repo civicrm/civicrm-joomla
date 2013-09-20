@@ -56,12 +56,12 @@ function civicrm_invoke() {
 
   // add all the values from the itemId param
   // overrride the GET values if conflict
-  if (CRM_Utils_Array::value('Itemid', $_GET)) {
+  if (CRM_Utils_Array::value('Itemid', $_REQUEST)) {
     $component = JComponentHelper::getComponent('com_civicrm');
     $menu      = JSite::getMenu();
-    $params    = $menu->getParams($_GET['Itemid']);
+    $params    = $menu->getParams($_REQUEST['Itemid']);
     $args      = array('task', 'id', 'gid', 'pageId', 'action', 'csid', 'component');
-    $view      = CRM_Utils_Array::value('view', $_GET);
+    $view      = CRM_Utils_Array::value('view', $_REQUEST);
     if ($view) {
       $args[] = 'reset';
     }
