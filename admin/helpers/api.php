@@ -13,7 +13,7 @@ defined('_JEXEC') or die('Restricted access');
 // Component Helper
 jimport('joomla.application.component.helper');
 class CivicrmHelperApi {
-  function civiInit() {
+  static function civiInit() {
     if (!defined('CIVICRM_SETTINGS_PATH')) {
       define('CIVICRM_SETTINGS_PATH', JPATH_BASE . '/components/com_civicrm/civicrm.settings.php');
     }
@@ -23,7 +23,7 @@ class CivicrmHelperApi {
     $config = CRM_Core_Config::singleton();
   }
 
-  function civiimport($path) {
+  static function civiimport($path) {
     self::civiInit();
 
     global $civicrm_root;
