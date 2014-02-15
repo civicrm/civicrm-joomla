@@ -58,7 +58,7 @@ function civicrm_invoke() {
   // overrride the GET values if conflict
   if (!empty($_REQUEST['Itemid'])) {
     $component = JComponentHelper::getComponent('com_civicrm');
-    $menu      = JSite::getMenu();
+    $menu      = JFactory::getApplication()->getMenu();
     $params    = $menu->getParams($_REQUEST['Itemid']);
     $args      = array('task', 'id', 'gid', 'pageId', 'action', 'csid', 'component');
     $view      = CRM_Utils_Array::value('view', $_REQUEST);
