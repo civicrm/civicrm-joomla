@@ -111,11 +111,15 @@ CRM_Core_ClassLoader::singleton()->register();
   );
 
   $liveSite = substr_replace(JURI::root(), '', -1, 1);
-  if ($civicrmUpgrade && defined('CIVICRM_SITE_KEY')) {
-    $siteKey = CIVICRM_SITE_KEY;
+  if ($civicrmUpgrade) {
+    require_once $configFile;
+    if (defined('CIVICRM_SITE_KEY')) {
+      $siteKey = CIVICRM_SITE_KEY;
+    }
   }
-  else {
-    $siteKey = md5(uniqid( '', true ) . $liveSite);
+
+  if (empty($siteKey)) {
+    $siteKey = md5( uniqid( '', true ) . $liveSite );
   }
 
   // generate backend settings file
