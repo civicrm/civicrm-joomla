@@ -115,7 +115,7 @@ CRM_Core_ClassLoader::singleton()->register();
     $siteKey = CIVICRM_SITE_KEY;
   }
   else {
-   $siteKey = md5(uniqid( '', true ) . $liveSite);
+    $siteKey = md5(uniqid( '', true ) . $liveSite);
   }
 
   // generate backend settings file
