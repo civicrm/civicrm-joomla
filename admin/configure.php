@@ -111,7 +111,12 @@ CRM_Core_ClassLoader::singleton()->register();
   );
 
   $liveSite = substr_replace(JURI::root(), '', -1, 1);
-  $siteKey = md5( uniqid( '', true ) . $liveSite );
+  if ($civicrmUpgrade && defined('CIVICRM_SITE_KEY')) {
+    $siteKey = CIVICRM_SITE_KEY;
+  }
+  else {
+   $siteKey = md5(uniqid( '', true ) . $liveSite);
+  }
 
   // generate backend settings file
   $string = civicrm_config(FALSE, $siteKey);
