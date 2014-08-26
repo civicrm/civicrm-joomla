@@ -98,7 +98,7 @@ function civicrm_invoke() {
 
   $config = CRM_Core_Config::singleton();
   if (!$config->userFrameworkFrontend) {
-    $resources->addStyleFile('civicrm', 'css/joomla.css', -97, 'html-header');
+    $resources->addStyleFile('civicrm', 'css/joomla.css', -101, 'html-header');
   }
   else {
     $resources->addStyleFile('civicrm', 'css/joomla_frontend.css', -97, 'html-header');
