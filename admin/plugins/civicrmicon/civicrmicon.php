@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright	Copyright (C) 2005 - 2011 CiviCRM LLC All rights reserved.
+ * @copyright	Copyright (C) 2005 - 2014 CiviCRM LLC All rights reserved.
  * @license		GNU Affero General Public License version 2 or later
  */
 
