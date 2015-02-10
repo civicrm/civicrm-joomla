@@ -61,7 +61,7 @@ WHERE option_group_id =24
       $options[] = JHTML::_('select.option', $dao->value, $dao->description);
     }
 
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $dao->value);
+    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $this->value);
   }
 }
 
