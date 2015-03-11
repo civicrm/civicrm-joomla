@@ -29,6 +29,7 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
+
 class JFormFieldCiviPCPs extends JFormField {
 
   /**
@@ -57,7 +58,13 @@ class JFormFieldCiviPCPs extends JFormField {
     // Get list of all profiles and assign to options array
     $options = array();
 
-    $query = 'SELECT id, title FROM civicrm_pcp WHERE is_active = 1 AND status_id = 2 ORDER BY title';
+    $query = '
+      SELECT id, title
+      FROM civicrm_pcp
+      WHERE is_active = 1
+        AND status_id = 2
+      ORDER BY title
+    ';
     $dao = CRM_Core_DAO::executeQuery($query);
     while ($dao->fetch()) {
       $options[] = JHTML::_('select.option', $dao->id, $dao->title);

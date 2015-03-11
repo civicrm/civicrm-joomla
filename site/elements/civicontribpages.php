@@ -33,8 +33,8 @@ class JFormFieldCiviContribPages extends JFormField {
   /**
    * Element name
    *
-   * @access	protected
-   * @var		string
+   * @access  protected
+   * @var     string
    */
   var $type = 'CiviContribPages';
 
@@ -53,10 +53,14 @@ class JFormFieldCiviContribPages extends JFormField {
     require_once 'CRM/Core/Config.php';
     $config = CRM_Core_Config::singleton();
 
-    $options   = array();
-    $options[] = JHTML::_('select.option', '0', JText::_('- Select Contribution Page -'));
-    $query     = 'SELECT id,title  FROM civicrm_contribution_page WHERE is_active = 1 ORDER BY title';
-    $dao       = CRM_Core_DAO::executeQuery($query);
+    $options = array();
+    $query = '
+      SELECT id, title
+      FROM civicrm_contribution_page
+      WHERE is_active = 1
+      ORDER BY title
+    ';
+    $dao = CRM_Core_DAO::executeQuery($query);
     while ($dao->fetch()) {
       $options[] = JHTML::_('select.option', $dao->id, $dao->title);
     }

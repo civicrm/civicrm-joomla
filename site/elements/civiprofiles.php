@@ -28,6 +28,7 @@
 // Active
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
+
 class JFormFieldCiviProfiles extends JFormField {
 
   /**
@@ -53,7 +54,6 @@ class JFormFieldCiviProfiles extends JFormField {
     $config = CRM_Core_Config::singleton();
 
     $ufGroups = CRM_Core_PseudoConstant::get('CRM_Core_DAO_UFField', 'uf_group_id');
-    $options[] = JHTML::_('select.option', '', JText::_('- Select Profile -'));
     foreach ($ufGroups as $key => $values) {
       $options[] = JHTML::_('select.option', $key, $values);
     }

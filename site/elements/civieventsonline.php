@@ -4,6 +4,7 @@
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
+
 class JFormFieldCiviEventsOnline extends JFormField {
 
   /**
@@ -37,11 +38,11 @@ class JFormFieldCiviEventsOnline extends JFormField {
       'return.id' => 1,
       'return.end_date' => 1,
       'return.start_date' => 1,
+      'rowCount' => 100,
     );
-    $events      = civicrm_api('event', 'get', $params);
+    $events = civicrm_api('event', 'get', $params);
     $currentdate = date("Y-m-d H:i:s");
-    $options     = array();
-    $options[]   = JHTML::_('select.option', '', JText::_('- Select Event -'));
+    $options = array();
     foreach ($events['values'] as $event) {
       if (strtotime($event['start_date']) >= strtotime($currentdate) ||
         strtotime($event['end_date']) >= strtotime($currentdate)
