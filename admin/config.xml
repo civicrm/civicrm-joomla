@@ -5,7 +5,7 @@
 		label="JCONFIG_PERMISSIONS_LABEL"
 		description="JCONFIG_PERMISSIONS_DESC"
 		>
-
+		<field name="civicrmaclnote" type="note" label="Note" description="If this page does not submit correctly (invalid token or redirects to Global Configuration) try increasing the 'max_input_vars' (default 1000) value in your php settings." />
 		<field
 			name="rules"
 			type="rules"
