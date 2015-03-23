@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-	<fieldset
-		name="permissions"
-		label="JCONFIG_PERMISSIONS_LABEL"
-		description="JCONFIG_PERMISSIONS_DESC"
-		>
-		<field name="civicrmaclnote" type="note" label="Note" description="If this page does not submit correctly (invalid token or redirects to Global Configuration) try increasing the 'max_input_vars' (default 1000) value in your php settings." />
-		<field
-			name="rules"
-			type="rules"
-			label="JCONFIG_PERMISSIONS_LABEL"
-			filter="rules"
-			validate="rules"
-			component="com_civicrm"
-			section="component">
-		</field>
+	<fieldset name="readme" label="COM_CIVICRM_README_LABEL" description="COM_CIVICRM_README_DESC">
+		<field name="civicrmaclnote" type="note" label="Note" description="If the permissions page does not submit correctly (invalid token or redirects to Global Configuration) try increasing the 'max_input_vars' (default 1000) value in your php settings. More Information: http://php.net/manual/en/info.configuration.php#ini.max-input-vars" />
+	</fieldset>
+	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC">
+		<field name="rules" type="rules" label="JCONFIG_PERMISSIONS_LABEL" filter="rules" validate="rules" component="com_civicrm" section="component" />
 	</fieldset>
 </config>
