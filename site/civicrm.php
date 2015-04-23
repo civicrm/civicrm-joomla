@@ -48,7 +48,7 @@ function civicrm_invoke() {
     // the session should not be empty
     // however for standalone forms, it will not have any CiviCRM variables in the
     // session either, so dont check for it
-    if (count($_SESSION) <= 1) {
+    if (empty($_SESSION)) {
       $config = CRM_Core_Config::singleton();
       CRM_Utils_System::redirect($config->userFrameworkBaseURL);
     }
