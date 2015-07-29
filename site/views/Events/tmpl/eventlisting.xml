@@ -15,22 +15,37 @@
     <version>3.3</version>
     <description>List of all active, current, public events.</description>
     <name>Event Listing</name>
-  <fields name="params">
-     <fieldset name="basic">
-        <field name="spacer" type="spacer" class="text" 
-               label="The event listing page has no parameter options to configure." />
-	<field name="task"  type="hidden" default="civicrm/event/ical" />
-	<field name="reset" type="hidden" size="1" default="1" />
-     </fieldset> 
-    </fields>
-  <fields name="request">
-      <fieldset name="request">
-	 <field name="spacer" type="spacer" class="text"
-	        label="The event listing page has no parameter options to configure." />
-   	 <field name="html" type="hidden" default="1" />
-	 <field name="page" type="hidden" default="1" />
-      </fieldset>
-  </fields>
 
+    <fields name="request">
+      <fieldset name="request">
+        <field name="spacer"
+               type="spacer"
+               class="text"
+               label="The event listing page has no parameter options to configure."
+               required="true"
+          />
+        <field name="task"
+               type="hidden"
+               default="civicrm/event/ical"
+               required="true"
+          />
+        <field name="reset"
+               type="hidden"
+               size="1"
+               default="1"
+               required="true"
+          />
+        <field name="html"
+               type="hidden"
+               default="1"
+               required="true"
+          />
+        <field name="page"
+               type="hidden"
+               default="1"
+               required="true"
+          />
+      </fieldset>
+    </fields>
   </state>
 </metadata>

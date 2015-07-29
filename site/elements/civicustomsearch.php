@@ -52,10 +52,12 @@ class JFormFieldCivicustomsearch extends JFormField {
     require_once 'CRM/Core/Config.php';
     $config = CRM_Core_Config::singleton();
     $query = "
-SELECT op_val.value, op_val.description
-FROM civicrm_option_value op_val
-INNER JOIN civicrm_option_group op_group ON (op_group.id = op_val.option_group_id)
-AND op_group.name = 'custom_search'";
+      SELECT op_val.value, op_val.description
+      FROM civicrm_option_value op_val
+      INNER JOIN civicrm_option_group op_group
+        ON (op_group.id = op_val.option_group_id)
+        AND op_group.name = 'custom_search'
+    ";
     $dao = CRM_Core_DAO::executeQuery($query);
     while ($dao->fetch()) {
       $options[] = JHTML::_('select.option', $dao->value, $dao->description);

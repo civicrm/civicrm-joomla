@@ -14,12 +14,21 @@
     <version>2.2</version>
     <description>CiviCRM Dashboard</description>
     <config>
-    <fields name="params">
-    <fieldset name="advanced"> 
-      <field name="task" type="hidden" default="civicrm/user" />
-      <field name="reset" type="hidden" size="5" default="1"  />
-    </fieldset>
-    </fields>
+      <fields name="request">
+        <fieldset name="request">
+          <field name="task"
+                 type="hidden"
+                 default="civicrm/user"
+                 required="true"
+            />
+          <field name="reset"
+                 type="hidden"
+                 size="5"
+                 default="1"
+                 required="true"
+            />
+        </fieldset>
+      </fields>
     </config>
   </state>
 </metadata>

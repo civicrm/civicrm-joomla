@@ -58,17 +58,21 @@ function civicrm_invoke() {
   // overrride the GET values if conflict
   if (!empty($_REQUEST['Itemid'])) {
     $component = JComponentHelper::getComponent('com_civicrm');
-    $app       = JFactory::getApplication();
-    $menu      = $app->getMenu();
-    $params    = $menu->getParams($app->input->get('Itemid'));
-    $args      = array('task', 'id', 'gid', 'pageId', 'action', 'csid', 'component');
-    $view      = CRM_Utils_Array::value('view', $_REQUEST);
+    $app = JFactory::getApplication();
+    $menu = $app->getMenu();
+    $params = $menu->getParams($app->input->get('Itemid'));
+    $args = array('task', 'id', 'gid', 'pageId', 'action', 'csid', 'component');
+    $view = CRM_Utils_Array::value('view', $_REQUEST);
     if ($view) {
       $args[] = 'reset';
     }
+
+    //look for menu item config in both request and params (backwards compatibility)
     foreach ($args as $a) {
-      $val = $params->get($a, NULL);
-      if ($val !== NULL && $view) {
+      $val = CRM_Utils_Array::value($a, $_REQUEST, NULL);
+      $valp = $params->get($a, NULL);
+      if (($val !== NULL || $valp !== NULL) && $view) {
+        $val = (!empty($val)) ? $val : $valp;
         $_REQUEST[$a] = $_GET[$a] = $val;
       }
     }

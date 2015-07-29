@@ -33,8 +33,8 @@ class JFormFieldCiviEvents extends JFormField {
   /**
    * Element name
    *
-   * @access	protected
-   * @var		string
+   * @access  protected
+   * @var     string
    */
   var $type = 'CiviEvents';
 
@@ -59,11 +59,11 @@ class JFormFieldCiviEvents extends JFormField {
       'return.id' => 1,
       'return.end_date' => 1,
       'return.start_date' => 1,
+      'rowCount' => 100,
     );
-    $events      = civicrm_api('event', 'get', $params);
+    $events = civicrm_api('event', 'get', $params);
     $currentdate = date("Y-m-d H:i:s");
-    $options     = array();
-    $options[]   = JHTML::_('select.option', '', JText::_('- Select Event -'));
+    $options = array();
     foreach ($events['values'] as $event) {
       $options[] = JHTML::_('select.option', $event['id'], $event['event_title']);
     }
