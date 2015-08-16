@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.5                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -35,7 +35,7 @@ defined('_JEXEC') or die('No direct access allowed');
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
+ * @copyright CiviCRM LLC (c) 2004-2015
  * $Id$
  *
  */
