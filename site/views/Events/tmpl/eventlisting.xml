@@ -22,7 +22,6 @@
                type="spacer"
                class="text"
                label="The event listing page has no parameter options to configure."
-               required="true"
           />
         <field name="task"
                type="hidden"
