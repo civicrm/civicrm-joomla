@@ -21,7 +21,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 
 // Check to ensure this file is included in Joomla!
@@ -64,23 +64,29 @@ function civicrm_initialize() {
 
   require_once 'PEAR.php';
   $config = CRM_Core_Config::singleton();
+  // Set the time zone in both PHP and database
+  $joomlaUserTimezone = CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
+  date_default_timezone_set($joomlaUserTimezone);
+  CRM_Core_Config::singleton()->userSystem->setMySQLTimeZone();
 }
 
 function plugin_init() {
   //invoke plugins.
   JPluginHelper::importPlugin('civicrm');
-  $app = JFactory::getApplication();
-  $app->triggerEvent('onCiviLoad');
 
+  $app = JFactory::getApplication();
+
+  $app->triggerEvent('onCiviLoad');
   // set page title
   JToolBarHelper::title('CiviCRM');
+  // We lose the PHP time zone default setting,so try to set it again.
+  $joomlaUserTimezone = CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
+  date_default_timezone_set($joomlaUserTimezone);
 }
 
 function civicrm_invoke() {
   civicrm_initialize();
-
   plugin_init();
-
   $user = JFactory::getUser();
 
   /* bypass synchronize if running upgrade
@@ -114,5 +120,5 @@ function civicrm_invoke() {
   }
   define('CIVICRM_UF_HEAD', TRUE);
   CRM_Core_Invoke::invoke($args);
-}
 
+}
