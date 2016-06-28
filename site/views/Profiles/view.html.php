@@ -35,7 +35,7 @@ defined('_JEXEC') or die('No direct access allowed');
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2016
  * $Id$
  *
  */
