@@ -36,6 +36,11 @@ function civicrm_initialize() {
   require_once 'PEAR.php';
   $config = CRM_Core_Config::singleton();
 
+  // Set the time zone in both PHP and database
+  $joomlaUserTimezone = CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
+  date_default_timezone_set($joomlaUserTimezone);
+  CRM_Core_Config::singleton()->userSystem->setMySQLTimeZone();
+
   // this is the front end, so let others know
   $config->userFrameworkFrontend = 1;
 }
@@ -89,4 +94,3 @@ function civicrm_invoke() {
   define('CIVICRM_UF_HEAD', TRUE);
   CRM_Core_Invoke::invoke($args);
 }
-
