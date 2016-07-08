@@ -21,7 +21,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 
 // Check to ensure this file is included in Joomla!
@@ -73,10 +73,9 @@ function civicrm_initialize() {
 function plugin_init() {
   //invoke plugins.
   JPluginHelper::importPlugin('civicrm');
-
   $app = JFactory::getApplication();
-
   $app->triggerEvent('onCiviLoad');
+
   // set page title
   JToolBarHelper::title('CiviCRM');
   // We lose the PHP time zone default setting,so try to set it again.
@@ -120,5 +119,4 @@ function civicrm_invoke() {
   }
   define('CIVICRM_UF_HEAD', TRUE);
   CRM_Core_Invoke::invoke($args);
-
 }

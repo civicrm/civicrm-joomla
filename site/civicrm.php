@@ -37,7 +37,7 @@ function civicrm_initialize() {
   $config = CRM_Core_Config::singleton();
 
   // Set the time zone in both PHP and database
-  $joomlaUserTimezone = CRM_Core_Config::singleton()->userSystem->getTimeZoneOffset();
+  $joomlaUserTimezone = CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
   date_default_timezone_set($joomlaUserTimezone);
   CRM_Core_Config::singleton()->userSystem->setMySQLTimeZone();
 
