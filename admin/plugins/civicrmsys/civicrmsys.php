@@ -10,8 +10,7 @@ defined('_JEXEC') or die;
  * @subpackage  System.Civicrmsys
  * @since    1.6
  */
-class plgSystemCivicrmsys extends JPlugin
-{
+class plgSystemCivicrmsys extends JPlugin {
   public $scheduled;
 
   public function onBeforeCompileHead() {
@@ -27,11 +26,10 @@ class plgSystemCivicrmsys extends JPlugin
   /**
    * After extension source code has been installed
    *
-   * @param  JInstaller  Installer object
-   * @param  int      Extension Identifier
+   * @param JInstaller $installer Installer object
+   * @param int $eid Extension Identifier
    */
-  public function onExtensionBeforeInstall()
-  {
+  public function onExtensionBeforeInstall() {
     // called by "Upload Package" use-case
     $this->scheduleCivicrmRebuild();
   }
@@ -39,11 +37,10 @@ class plgSystemCivicrmsys extends JPlugin
   /**
    * After extension source code has been installed
    *
-   * @param  JInstaller  Installer object
-   * @param  int      Extension Identifier
+   * @param JInstaller $installer Installer object
+   * @param int $eid Extension Identifier
    */
-  public function onExtensionAfterInstall($installer, $eid)
-  {
+  public function onExtensionAfterInstall($installer, $eid) {
     if ($installer->extension instanceof JTableExtension && $installer->extension->folder == 'civicrm') {
       //x $args = func_get_args(); dump($args, 'onExtensionAfterInstall');
       $this->scheduleCivicrmRebuild();
@@ -53,21 +50,19 @@ class plgSystemCivicrmsys extends JPlugin
   /**
    * After extension source code has been updated(?)
    *
-   * @param  JInstaller  Installer object
-   * @param  int      Extension identifier
+   * @param JInstaller $installer Installer object
+   * @param int $eid Extension Identifier
    */
-  public function onExtensionAfterUpdate($installer, $eid)
-  {
+  public function onExtensionAfterUpdate($installer, $eid) {
     // TODO test //if ($installer->extension instanceof JTableExtension && $installer->extension->folder == 'civicrm') {
-      $this->scheduleCivicrmRebuild();
+    $this->scheduleCivicrmRebuild();
     //}
   }
 
   /**
    * After extension configuration has been saved
    */
-  public function onExtensionAfterSave($type, $ext)
-  {
+  public function onExtensionAfterSave($type, $ext) {
     // Called by "Manage Plugins" use-case -- per-plugin forms
     if ($type == 'com_plugins.plugin' && $ext->folder == 'civicrm') {
       $this->scheduleCivicrmRebuild();
@@ -84,11 +79,10 @@ class plgSystemCivicrmsys extends JPlugin
   /**
    * After extension source code has been removed
    *
-   * @param  JInstaller  Installer object
-   * @param  int      Extension identifier
+   * @param JInstaller $installer Installer object
+   * @param int $eid Extension Identifier
    */
-  public function onExtensionAfterUninstall($installer, $eid, $result)
-  {
+  public function onExtensionAfterUninstall($installer, $eid, $result) {
     $this->scheduleCivicrmRebuild();
   }
 
@@ -124,7 +118,8 @@ class plgSystemCivicrmsys extends JPlugin
 
     $app = JFactory::getApplication(); // copied from example -- but why?
 
-    define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
+    define('CIVICRM_SETTINGS_PATH',
+      JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
     require_once CIVICRM_SETTINGS_PATH;
 
     require_once 'CRM/Core/ClassLoader.php';
@@ -133,4 +128,5 @@ class plgSystemCivicrmsys extends JPlugin
     require_once 'CRM/Core/Config.php';
     $civiConfig = CRM_Core_Config::singleton();
   }
+
 }
