@@ -2,16 +2,17 @@
 
 /**
  * @version
- * @package		Civicrm
- * @subpackage	Joomla Plugin
- * @copyright	Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package        Civicrm
+ * @subpackage    Joomla Plugin
+ * @copyright    Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved.
+ * @license        GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('_JEXEC') or die;
 
 jimport('joomla.plugin.plugin');
+
 class plgCiviCRMHookExample extends JPlugin {
 
   /**
@@ -19,12 +20,15 @@ class plgCiviCRMHookExample extends JPlugin {
    * the wiki docs
    * http://wiki.civicrm.org/confluence/display/CRMDOC/CiviCRM+hook+specification
    *
-   * @package		Civicrm
-   * @subpackage	Joomla plugins
-   * @since		1.5
+   * @package        Civicrm
+   * @subpackage    Joomla plugins
+   * @since        1.5
    */
-
-  public function civicrm_summary($contactID, &$content, &$contentPlacement = CRM_Utils_Hook::SUMMARY_BELOW) {
+  public function civicrm_summary(
+    $contactID,
+    &$content,
+    &$contentPlacement = CRM_Utils_Hook::SUMMARY_BELOW
+  ) {
     $contentPlacement = $this->params->def('placement');
     $content = "
 <table>
@@ -52,5 +56,5 @@ class plgCiviCRMHookExample extends JPlugin {
       'weight' => 300,
     );
   }
-}
 
+}
