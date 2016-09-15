@@ -3,8 +3,8 @@
 /**
  * @version
  * @package
- * @copyright   @copyright CiviCRM LLC (c) 2004-2016
- * @license		GNU/GPL v2 or later
+ * @copyright CiviCRM LLC (c) 2004-2016
+ * @license GNU/GPL v2 or later
  */
 
 // no direct access
@@ -29,5 +29,5 @@ class CivicrmHelperApi {
     global $civicrm_root;
     return JLoader::import($path, $civicrm_root, '');
   }
-}
 
+}
