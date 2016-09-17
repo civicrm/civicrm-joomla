@@ -159,6 +159,10 @@ CRM_Core_ClassLoader::singleton()->register();
 
 function civicrm_source($fileName, $lineMode = FALSE) {
 
+  if (!defined('DB_DSN_MODE')) {
+    define('DB_DSN_MODE', 'auto');
+  }
+
   $dsn = CIVICRM_DSN;
 
   require_once 'DB.php';
