@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright	Copyright (C) 2005 - 2014 CiviCRM LLC All rights reserved.
- * @license		GNU Affero General Public License version 2 or later
+ * @copyright    Copyright (C) 2005 - 2014 CiviCRM LLC All rights reserved.
+ * @license        GNU Affero General Public License version 2 or later
  */
 
 defined('_JEXEC') or die;
@@ -15,8 +15,8 @@ class plgQuickiconCivicrmicon extends JPlugin {
   /**
    * Constructor
    *
-   * @param       object  $subject The object to observe
-   * @param       array   $config  An array that holds the plugin configuration
+   * @param       object $subject The object to observe
+   * @param       array $config An array that holds the plugin configuration
    *
    * @since       2.5
    */
@@ -33,7 +33,7 @@ class plgQuickiconCivicrmicon extends JPlugin {
    * @param  $context  The calling context
    *
    * @return array A list of icon definition associative arrays, consisting of the
-   *				 keys link, image, text and access.
+   *                 keys link, image, text and access.
    *
    * @since       2.5
    */
@@ -45,7 +45,7 @@ class plgQuickiconCivicrmicon extends JPlugin {
         'image' => JURI::base() . 'components/com_civicrm/civicrm/i/smallLogo.png',
         'text' => 'CiviCRM',
         'id' => 'plg_quickicon_civicrmicon',
-      )
+      ),
     );
 
     //image must be handled via css class in J3.0
@@ -53,17 +53,18 @@ class plgQuickiconCivicrmicon extends JPlugin {
       $img = JURI::root() . 'plugins/quickicon/civicrmicon/smallLogo14.png';
       $css = '
         .icon-civicrm, .icon-civicrm-open {
-          background-image:url("'.$img.'");
+          background-image:url("' . $img . '");
         }
       ';
       $document = JFactory::getDocument();
-      $document->addStyleDeclaration( $css );
+      $document->addStyleDeclaration($css);
       $icon[0]['image'] = 'civicrm';
-    } else {
+    }
+    else {
       $icon[0]['image'] = JURI::base() . 'components/com_civicrm/civicrm/i/smallLogo.png';
     }
 
     return $icon;
   }
-}
 
+}

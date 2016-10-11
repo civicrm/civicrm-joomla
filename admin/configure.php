@@ -21,7 +21,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 
 // escape early if called directly
@@ -119,7 +119,7 @@ CRM_Core_ClassLoader::singleton()->register();
   }
 
   if (empty($siteKey)) {
-    $siteKey = md5( uniqid( '', true ) . $liveSite );
+    $siteKey = md5(uniqid('', TRUE) . $liveSite);
   }
 
   // generate backend settings file
@@ -247,4 +247,3 @@ function civicrm_config($frontend = FALSE, $siteKey) {
 }
 
 civicrm_main();
-
