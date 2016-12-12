@@ -56,7 +56,7 @@ function civicrm_invoke() {
 
   // add all the values from the itemId param
   // overrride the GET values if conflict
-  if (CRM_Utils_Array::value('Itemid', $_REQUEST)) {
+  if (!empty($_REQUEST['Itemid'])) {
     $component = JComponentHelper::getComponent('com_civicrm');
     $app       = JFactory::getApplication();
     $menu      = $app->getMenu();
