@@ -64,6 +64,7 @@ function civicrm_initialize() {
 
   require_once 'PEAR.php';
   $config = CRM_Core_Config::singleton();
+  CRM_Core_Config::singleton()->userSystem->setMySQLTimeZone();
 }
 
 function plugin_init() {

@@ -38,6 +38,7 @@ function civicrm_initialize() {
 
   // this is the front end, so let others know
   $config->userFrameworkFrontend = 1;
+  CRM_Core_Config::singleton()->userSystem->setMySQLTimeZone();
 }
 
 function civicrm_invoke() {
