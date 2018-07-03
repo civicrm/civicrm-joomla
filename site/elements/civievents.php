@@ -53,16 +53,13 @@ class JFormFieldCiviEvents extends JFormField {
     $config = CRM_Core_Config::singleton();
 
     $params = array(
-      'version' => '3',
       'is_active' => 1,
-      'return.title' => 1,
-      'return.id' => 1,
-      'return.end_date' => 1,
-      'return.start_date' => 1,
-      'rowCount' => 100,
+      'return' => array("title"),
+      'start_date' => array('>=' => "today"),
+      'end_date' => array('>=' => "today"),
+      'options' => array('sort' => "start_date", 'limit' => 0, 'or' => array(array("start_date", "end_date"))),
     );
-    $events = civicrm_api('event', 'get', $params);
-    $currentdate = date("Y-m-d H:i:s");
+    $events = civicrm_api3('Event', 'get', $params);
     $options = array();
     foreach ($events['values'] as $event) {
       $options[] = JHTML::_('select.option', $event['id'], $event['event_title']);
@@ -71,5 +68,3 @@ class JFormFieldCiviEvents extends JFormField {
     return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
   }
 }
-
-
