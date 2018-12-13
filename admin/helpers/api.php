@@ -3,7 +3,7 @@
 /**
  * @version
  * @package
- * @copyright CiviCRM LLC (c) 2004-2018
+ * @copyright CiviCRM LLC (c) 2004-2019
  * @license GNU/GPL v2 or later
  */
 
