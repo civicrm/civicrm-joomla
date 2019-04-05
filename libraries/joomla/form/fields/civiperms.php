@@ -279,7 +279,7 @@ class JFormFieldCiviperms extends JFormFieldRules {
   private static function getCiviperms($component, $section) {
     $actions = JAccess::getActions($component, $section);
 
-    $extPerms = self::$civiConfig->userPermissionClass->getAllModulePermissions(TRUE);
+    $extPerms = self::$civiConfig->userPermissionClass->getAllModulePermissions(true);
     foreach ($extPerms as $key => $perm) {
       $translation = self::$civiConfig->userPermissionClass->translateJoomlaPermission($key);
       $actions[] = (object) array(

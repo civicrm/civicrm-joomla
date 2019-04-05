@@ -57,7 +57,7 @@ class JFormFieldCiviProfiles extends JFormField {
     foreach ($ufGroups as $key => $values) {
       $options[] = JHTML::_('select.option', $key, $values);
     }
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return JHTML::_('select.genericlist', $options, $name, null, 'value', 'text', $value);
   }
 }
 

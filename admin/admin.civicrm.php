@@ -94,7 +94,7 @@ function civicrm_invoke() {
    */
 
   if (CRM_Utils_Array::value('task', $_REQUEST) != 'civicrm/upgrade') {
-    CRM_Core_BAO_UFMatch::synchronize($user, FALSE, 'Joomla', 'Individual', TRUE);
+    CRM_Core_BAO_UFMatch::synchronize($user, false, 'Joomla', 'Individual', true);
   }
 
   // Add our standard css & js
@@ -117,6 +117,6 @@ function civicrm_invoke() {
     $_GET['reset'] = 1;
     $args = array('civicrm', 'dashboard');
   }
-  define('CIVICRM_UF_HEAD', TRUE);
+  define('CIVICRM_UF_HEAD', true);
   CRM_Core_Invoke::invoke($args);
 }

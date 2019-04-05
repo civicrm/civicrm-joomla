@@ -18,7 +18,7 @@ class plgSystemCivicrmsys extends JPlugin {
     if (empty($civicrm_root)) {
       return;
     }
-    if ($region = CRM_Core_Region::instance('html-header', FALSE)) {
+    if ($region = CRM_Core_Region::instance('html-header', false)) {
       CRM_Utils_System::addHTMLHead($region->render(''));
     }
   }
@@ -95,7 +95,7 @@ class plgSystemCivicrmsys extends JPlugin {
     }
     register_shutdown_function(array($this, 'doCivicrmRebuild'));
     // dump(TRUE, 'scheduled');
-    $this->scheduled = TRUE;
+    $this->scheduled = true;
   }
 
   /**
@@ -104,7 +104,7 @@ class plgSystemCivicrmsys extends JPlugin {
   public function doCivicrmRebuild() {
     // dump($this, 'doCivicrmRebuild');
     $this->bootstrap();
-    CRM_Core_Invoke::rebuildMenuAndCaches(TRUE);
+    CRM_Core_Invoke::rebuildMenuAndCaches(true);
   }
 
   /**

@@ -69,7 +69,7 @@ class JFormFieldCiviPCPs extends JFormField {
     while ($dao->fetch()) {
       $options[] = JHTML::_('select.option', $dao->id, $dao->title);
     }
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return JHTML::_('select.genericlist', $options, $name, null, 'value', 'text', $value);
   }
 }
 

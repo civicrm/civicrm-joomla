@@ -65,7 +65,7 @@ class JFormFieldCiviContribPages extends JFormField {
       $options[] = JHTML::_('select.option', $dao->id, $dao->title);
     }
     return JHTML::_('select.genericlist', $options, $name,
-      NULL, 'value', 'text', $value, $name
+      null, 'value', 'text', $value, $name
     );
   }
 }

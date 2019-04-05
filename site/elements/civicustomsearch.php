@@ -63,7 +63,7 @@ class JFormFieldCivicustomsearch extends JFormField {
       $options[] = JHTML::_('select.option', $dao->value, $dao->description);
     }
 
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $this->value);
+    return JHTML::_('select.genericlist', $options, $name, null, 'value', 'text', $this->value);
   }
 }
 

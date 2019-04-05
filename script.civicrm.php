@@ -37,7 +37,7 @@ class Com_CiviCRMInstallerScript {
     require_once 'CRM/Utils/System.php';
     require_once 'CRM/Utils/Array.php';
     if ($civicrmUpgrade) {
-      $docLink = CRM_Utils_System::docURL2('Installation and Upgrades', TRUE, 'Upgrade Guide',NULL,NULL,"wiki");
+      $docLink = CRM_Utils_System::docURL2('Installation and Upgrades', true, 'Upgrade Guide',null,null,"wiki");
       // UPGRADE successful status and links
       $content = '
   <center>
@@ -53,10 +53,10 @@ class Com_CiviCRMInstallerScript {
   </center>';
     }
     else {
-      $docLink  = CRM_Utils_System::docURL2('Installation and Upgrades', FALSE, 'Installation Guide',NULL,NULL,"wiki");
-      $frontEnd = CRM_Utils_System::docURL2('Configuring Front-end Profile Listings and Forms in Joomla! Sites', FALSE, 'Create front-end forms and searchable directories using Profiles',NULL,NULL,"wiki");
-      $contri   = CRM_Utils_System::docURL2('Displaying Online Contribution Pages in Joomla! Frontend Sites', FALSE, 'Create online contribution pages',NULL,NULL,"wiki");
-      $event    = CRM_Utils_System::docURL2('Configuring Front-end Event Info and Registration in Joomla! Sites', FALSE, 'Create events with online event registration',NULL,NULL,"wiki");
+      $docLink  = CRM_Utils_System::docURL2('Installation and Upgrades', false, 'Installation Guide',null,null,"wiki");
+      $frontEnd = CRM_Utils_System::docURL2('Configuring Front-end Profile Listings and Forms in Joomla! Sites', false, 'Create front-end forms and searchable directories using Profiles',null,null,"wiki");
+      $contri   = CRM_Utils_System::docURL2('Displaying Online Contribution Pages in Joomla! Frontend Sites', false, 'Create online contribution pages',null,null,"wiki");
+      $event    = CRM_Utils_System::docURL2('Configuring Front-end Event Info and Registration in Joomla! Sites', false, 'Create events with online event registration',null,null,"wiki");
 
       // INSTALL successful status and links
       $content = '
@@ -136,7 +136,7 @@ AND    $columnType = 'plugin'
   }
 
   function uninstall($parent) {
-    $uninstall = FALSE;
+    $uninstall = false;
     // makes it easier if folks want to really uninstall
     if ($uninstall) {
       define('CIVICRM_SETTINGS_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'civicrm.settings.php');
@@ -247,10 +247,10 @@ AND    $columnType = 'plugin'
       }
 
       foreach ($groups as $group) {
-        $present = FALSE;
+        $present = false;
         foreach ($rulesArray as $key => $val) {
           if ((int ) $key == $group) {
-            $present = TRUE;
+            $present = true;
             break;
           }
         }

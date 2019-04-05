@@ -75,9 +75,9 @@ function civicrm_invoke() {
 
     //look for menu item config in both request and params (backwards compatibility)
     foreach ($args as $a) {
-      $val = CRM_Utils_Array::value($a, $_REQUEST, NULL);
-      $valp = $params->get($a, NULL);
-      if (($val !== NULL || $valp !== NULL) && $view) {
+      $val = CRM_Utils_Array::value($a, $_REQUEST, null);
+      $valp = $params->get($a, null);
+      if (($val !== null || $valp !== null) && $view) {
         $val = (!empty($val)) ? $val : $valp;
         $_REQUEST[$a] = $_GET[$a] = $val;
       }
@@ -90,8 +90,8 @@ function civicrm_invoke() {
   CRM_Core_Resources::singleton()->addCoreResources();
 
   $user = JFactory::getUser();
-  CRM_Core_BAO_UFMatch::synchronize($user, FALSE, 'Joomla', 'Individual', TRUE);
+  CRM_Core_BAO_UFMatch::synchronize($user, false, 'Joomla', 'Individual', true);
 
-  define('CIVICRM_UF_HEAD', TRUE);
+  define('CIVICRM_UF_HEAD', true);
   CRM_Core_Invoke::invoke($args);
 }

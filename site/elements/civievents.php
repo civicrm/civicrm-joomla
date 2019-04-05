@@ -65,6 +65,6 @@ class JFormFieldCiviEvents extends JFormField {
       $options[] = JHTML::_('select.option', $event['id'], $event['event_title']);
     }
 
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return JHTML::_('select.genericlist', $options, $name, null, 'value', 'text', $value);
   }
 }

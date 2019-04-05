@@ -73,7 +73,7 @@ class JFormFieldCiviContribPagesPCP extends JFormField {
     }
 
     return JHTML::_('select.genericlist', $options, $name,
-      NULL, 'value', 'text', $value, $name
+      null, 'value', 'text', $value, $name
     );
   }
 }

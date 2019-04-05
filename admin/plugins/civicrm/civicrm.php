@@ -100,7 +100,7 @@ class plgUserCivicrm extends JPlugin {
    *
    * @return void
    */
-  public function civicrmResetNavigation($jId = NULL) {
+  public function civicrmResetNavigation($jId = null) {
     // Instantiate CiviCRM
     if (!class_exists('CRM_Core_Config')) {
       require_once JPATH_ROOT . '/administrator/components/com_civicrm/civicrm.settings.php';
@@ -109,7 +109,7 @@ class plgUserCivicrm extends JPlugin {
 
     $config = CRM_Core_Config::singleton();
 
-    $cId = NULL;
+    $cId = null;
 
     //retrieve civicrm contact ID if joomla user ID is provided
     if ($jId) {

@@ -28,7 +28,7 @@
 defined('_JEXEC') or die('No direct access allowed');
 
 global $civicrmUpgrade;
-$civicrmUpgrade = FALSE;
+$civicrmUpgrade = false;
 function civicrm_setup() {
   global $adminPath, $compileDir;
 
@@ -73,7 +73,7 @@ WHERE table_name LIKE "civicrm_domain"
 AND table_schema = "' . $jConfig->db . '" ');
 
   global $civicrmUpgrade;
-  $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
+  $civicrmUpgrade = ($db->loadResult() == 0) ? false : true;
 }
 
 function civicrm_write_file($name, &$buffer) {
@@ -119,15 +119,15 @@ CRM_Core_ClassLoader::singleton()->register();
   }
 
   if (empty($siteKey)) {
-    $siteKey = md5(uniqid('', TRUE) . $liveSite);
+    $siteKey = md5(uniqid('', true) . $liveSite);
   }
 
   // generate backend settings file
-  $string = civicrm_config(FALSE, $siteKey);
+  $string = civicrm_config(false, $siteKey);
   civicrm_write_file($configFile, $string);
 
   // generate frontend settings file
-  $string = civicrm_config(TRUE, $siteKey);
+  $string = civicrm_config(true, $siteKey);
   civicrm_write_file(JPATH_SITE . DIRECTORY_SEPARATOR .
     'components' . DIRECTORY_SEPARATOR .
     'com_civicrm' . DIRECTORY_SEPARATOR .
@@ -157,7 +157,7 @@ CRM_Core_ClassLoader::singleton()->register();
   }
 }
 
-function civicrm_source($fileName, $lineMode = FALSE) {
+function civicrm_source($fileName, $lineMode = false) {
 
   if (!defined('DB_DSN_MODE')) {
     define('DB_DSN_MODE', 'auto');
@@ -207,7 +207,7 @@ function civicrm_source($fileName, $lineMode = FALSE) {
   }
 }
 
-function civicrm_config($frontend = FALSE, $siteKey) {
+function civicrm_config($frontend = false, $siteKey) {
   global $adminPath, $compileDir;
 
   $jConfig = new JConfig();
