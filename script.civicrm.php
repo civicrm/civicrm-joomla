@@ -177,10 +177,9 @@ AND    $columnType = 'plugin'
     // only set if its empty
     $db = JFactory::getDbo();
     $db->setQuery('SELECT rules FROM #__assets WHERE name = ' . $db->quote('com_civicrm'));
-    $assetRules = json_decode((string ) $db->loadResult());
+    $assetRules = json_decode((string) $db->loadResult(), TRUE);
 
-
-    if (count($assetRules) > 1) {
+    if (is_array($assetRules) && count($assetRules) > 1) {
       return;
     }
 
