@@ -53,7 +53,8 @@ function civicrm_setup() {
     }
 
     $extractdir = $adminPath;
-    JArchive::extract($archivename, $extractdir);
+    $archive = new Joomla\Archive\Archive;
+    $archive->extract($archivename, $extractdir);
   }
 
   $scratchDir = JPATH_SITE . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'civicrm';
@@ -173,7 +174,7 @@ function civicrm_source($fileName, $lineMode = FALSE) {
   }
 
   if (!$lineMode) {
-    $string = JFile::read($fileName);
+    $string = file_get_contents($fileName);
 
     //get rid of comments starting with # and --
     $string = preg_replace("/^#[^\n]*$/m", "\n", $string);
@@ -233,7 +234,7 @@ function civicrm_config($frontend = FALSE, $siteKey) {
     $params['baseURL'] = $liveSite . '/';
   }
 
-  $str = JFile::read($adminPath . DIRECTORY_SEPARATOR .
+  $str = file_get_contents($adminPath . DIRECTORY_SEPARATOR .
     'civicrm' . DIRECTORY_SEPARATOR .
     'templates' . DIRECTORY_SEPARATOR .
     'CRM' . DIRECTORY_SEPARATOR .
