@@ -83,8 +83,21 @@ class Com_CiviCRMInstallerScript {
   </center>';
     }
 
-    //install and enable plugins
-    $manifest  = $parent->get("manifest");
+    // Install and enable plugins
+
+    // Get the installer manifest. Use the getManifest() method if it exists (Joomla 3.4+)
+    // If not then use get("manifest") (deprecated in Joomla 4.0).
+    if (method_exists($parent, 'getManifest')) {
+      $manifest = $parent->getManifest();
+    }
+    elseif (method_exists($parent, 'get')) {
+      $manifest = $parent->get("manifest");
+    }
+    else {
+      echo "No method found to get Joomla installer manifest.";
+      exit();
+    }
+
     $parent    = $parent->getParent();
     $source    = $parent->getPath("source");
     $installer = new JInstaller();
@@ -130,7 +143,7 @@ SET    $columnEnabled = 1
 WHERE  $columnElement IN ($plgList)
 AND    $columnType = 'plugin'
 ");
-    $db->query();
+    $db->execute();
 
     echo $content;
   }
@@ -267,7 +280,7 @@ AND    $columnType = 'plugin'
       ' WHERE name = ' .
       $db->quote('com_civicrm')
     );
-    if (!$db->query()) {
+    if (!$db->execute()) {
       echo 'Seems like setting default actions failed<p>';
     }
   }

@@ -85,8 +85,7 @@ class plgUserCivicrm extends JPlugin {
    * @since    1.6
    */
   public function onUserLogin($user, $options = array()) {
-    $app  = JFactory::getApplication();
-    if ($app->isAdmin()) {
+    if (self::isAdminBackend()) {
       $jUser = JFactory::getUser();
       $jId = $jUser->get('id');
       self::civicrmResetNavigation($jId);
@@ -123,6 +122,29 @@ class plgUserCivicrm extends JPlugin {
 
     // Reset Navigation
     CRM_Core_BAO_Navigation::resetNavigation($cId);
+  }
+
+  /**
+   * Determine if we are in the Joomla administrator backend
+   *
+   * @return boolean True if in the Joomla Administrator backend otherwise false
+   */
+  private function isAdminBackend() {
+    $app = JFactory::getApplication();
+
+    // Determine if we are in the Joomla administrator backend
+    // In Joomla 3.7+ the isClient() method is used. In earlier versions use the isAdmin() method (deprecated in Joomla 4.0).
+    if (method_exists($app, 'isClient')) {
+      $isAdmin = $app->isClient('administrator');
+    }
+    elseif (method_exists($app, 'isAdmin')) {
+      $isAdmin = $app->isAdmin();
+    }
+    else {
+      throw new \Exception("CiviCRM User Plugin error: no method found to determine Joomla client interface.");
+    }
+
+    return $isAdmin;
   }
 
 }
