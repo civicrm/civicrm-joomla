@@ -117,18 +117,24 @@ CRM_Core_ClassLoader::singleton()->register();
     if (defined('CIVICRM_SITE_KEY')) {
       $siteKey = CIVICRM_SITE_KEY;
     }
+    if (defined('CIVICRM_CRED_KEYS')) {
+      $credKeys = CIVICRM_CRED_KEYS;
+    }
   }
 
   if (empty($siteKey)) {
-    $siteKey = md5(uniqid('', TRUE) . $liveSite);
+    $siteKey = preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(32)));
+  }
+  if (empty($credKeys)) {
+    $credKeys = 'aes-cbc:hkdf-sha256:' . preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(32)));
   }
 
   // generate backend settings file
-  $string = civicrm_config(FALSE, $siteKey);
+  $string = civicrm_config(FALSE, $siteKey, $credKeys);
   civicrm_write_file($configFile, $string);
 
   // generate frontend settings file
-  $string = civicrm_config(TRUE, $siteKey);
+  $string = civicrm_config(TRUE, $siteKey, $credKeys);
   civicrm_write_file(JPATH_SITE . DIRECTORY_SEPARATOR .
     'components' . DIRECTORY_SEPARATOR .
     'com_civicrm' . DIRECTORY_SEPARATOR .
@@ -208,7 +214,7 @@ function civicrm_source($fileName, $lineMode = FALSE) {
   }
 }
 
-function civicrm_config($frontend = FALSE, $siteKey) {
+function civicrm_config($frontend = FALSE, $siteKey, $credKeys) {
   global $adminPath, $compileDir;
 
   $jConfig = new JConfig();
@@ -228,6 +234,7 @@ function civicrm_config($frontend = FALSE, $siteKey) {
     'CMSdbHost' => $jConfig->host,
     'CMSdbName' => $jConfig->db,
     'siteKey' => $siteKey,
+    'credKeys' => $credKeys,
   );
 
   if ($frontend) {
