@@ -53,9 +53,9 @@ function civicrm_init() {
  */
 function civicrm_initialize() {
   // Check for php version and ensure its greater than minPhpVersion
-  $minPhpVersion = '5.3.4';
+  $minPhpVersion = '7.0.0';
   if (version_compare(PHP_VERSION, $minPhpVersion) < 0) {
-    echo "CiviCRM requires PHP Version $minPhpVersion or greater. You are running PHP Version " . PHP_VERSION . "<p>";
+    echo "CiviCRM requires PHP version $minPhpVersion or greater. You are running PHP version " . PHP_VERSION . "<p>";
     exit();
   }
 
