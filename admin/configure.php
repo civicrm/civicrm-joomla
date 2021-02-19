@@ -123,10 +123,10 @@ CRM_Core_ClassLoader::singleton()->register();
   }
 
   if (empty($siteKey)) {
-    $siteKey = preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(32)));
+    $siteKey = preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37)));
   }
   if (empty($credKeys)) {
-    $credKeys = 'aes-cbc:hkdf-sha256:' . preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(32)));
+    $credKeys = 'aes-cbc:hkdf-sha256:' . preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37)));
   }
 
   // generate backend settings file
