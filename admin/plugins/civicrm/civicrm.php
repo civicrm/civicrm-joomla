@@ -117,7 +117,10 @@ class plgUserCivicrm extends JPlugin {
         'uf_id' => $jId,
         'return' => 'contact_id',
       );
-      $cId = civicrm_api('uf_match', 'getvalue', $params);
+      $result = civicrm_api('uf_match', 'getvalue', $params);
+      // If no match is found, will return an error array
+      if (is_int($result))
+        $cId = $result;
     }
 
     // Reset Navigation
