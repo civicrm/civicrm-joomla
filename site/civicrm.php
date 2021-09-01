@@ -48,18 +48,6 @@ function civicrm_initialize() {
 function civicrm_invoke() {
   civicrm_initialize();
 
-  // check and ensure that we have a valid session
-  if (!empty($_POST)) {
-    $urlStart = substr(stripslashes(CRM_Utils_Array::value('task', $_GET)), 0, 19);
-    // the session should not be empty
-    // however for standalone forms, it will not have any CiviCRM variables in the
-    // session either, so dont check for it
-    if (empty($_SESSION) && $urlStart != 'civicrm/payment/ipn') {
-      $config = CRM_Core_Config::singleton();
-      CRM_Utils_System::redirect($config->userFrameworkBaseURL);
-    }
-  }
-
   // add all the values from the itemId param
   // overrride the GET values if conflict
   if (!empty($_REQUEST['Itemid'])) {
