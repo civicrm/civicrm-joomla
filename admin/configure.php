@@ -242,6 +242,8 @@ function civicrm_config($frontend = FALSE, $siteKey, $credKeys, $signKeys) {
     'siteKey' => $siteKey,
     'credKeys' => $credKeys,
     'signKeys' => $signKeys,
+    'dbSSL' => '',
+    'CMSdbSSL' => '',
   );
 
   if ($frontend) {
