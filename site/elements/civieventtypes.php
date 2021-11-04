@@ -1,0 +1,83 @@
+<?php
+/*
+   +--------------------------------------------------------------------+
+   | CiviCRM version 5                                                  |
+   +--------------------------------------------------------------------+
+   | This file is a part of CiviCRM.                                    |
+   |                                                                    |
+   | CiviCRM is free software; you can copy, modify, and distribute it  |
+   | under the terms of the GNU Affero General Public License           |
+   | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
+   |                                                                    |
+   | CiviCRM is distributed in the hope that it will be useful, but     |
+   | WITHOUT ANY WARRANTY; without even the implied warranty of         |
+   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.               |
+   | See the GNU Affero General Public License for more details.        |
+   |                                                                    |
+   | You should have received a copy of the GNU Affero General Public   |
+   | License and the CiviCRM Licensing Exception along                  |
+   | with this program; if not, contact CiviCRM LLC                     |
+   | at info[AT]civicrm[DOT]org. If you have questions about the        |
+   | GNU Affero General Public License or the licensing of CiviCRM,     |
+   | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
+   +--------------------------------------------------------------------+
+  */
+
+// Retrieve list of CiviCRM event types
+
+// Check to ensure this file is included in Joomla!
+defined('_JEXEC') or die('Restricted access');
+
+// TODO: remove the below once JFormField no longer referenced for J4+
+if (version_compare(JVERSION, '4.0', 'ge')) {
+  class _J3_to_J4_JFormFieldCiviEventTypes extends \Joomla\CMS\Form\FormField {
+    // This is the base class for J4+
+    // When we move away from J3 compatibility, there is an opportunity to
+    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
+  }
+}
+else {
+  class _J3_to_J4_JFormFieldCiviEventTypes extends JFormField {
+    // This is the base class for J3 and below.
+  }
+}
+
+class JFormFieldCiviEventTypes extends _J3_to_J4_JFormFieldCiviEventTypes {
+
+  /**
+   * Element name
+   *
+   * @access  protected
+   * @var     string
+   */
+  var $type = 'CiviEventTypes';
+
+  protected function getInput() {
+
+    $value = $this->value;
+    $name = $this->name;
+    // Initiate CiviCRM
+    define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
+    require_once CIVICRM_SETTINGS_PATH;
+
+    require_once 'CRM/Core/ClassLoader.php';
+    CRM_Core_ClassLoader::singleton()->register();
+
+    require_once 'CRM/Core/Config.php';
+    $config = CRM_Core_Config::singleton();
+
+    $eventTypes = \Civi\Api4\OptionValue::get(FALSE)
+      ->addSelect('value', 'label')
+      ->addJoin('OptionGroup AS option_group', 'INNER', ['option_group_id:name', '=', '"event_type"'])
+      ->execute();
+    $options = array();
+    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
+    $options[] = $htmlClass::_('select.option', NULL, '');
+
+    foreach ($eventTypes as $eventType) {
+      $options[] = $htmlClass::_('select.option', $eventType['value'], $eventType['label']);
+    }
+
+    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+  }
+}
