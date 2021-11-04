@@ -18,10 +18,10 @@
 
     <fields name="request">
       <fieldset name="request">
-        <field name="spacer"
-               type="spacer"
+        <field name="type"
+               type="number"
                class="text"
-               label="The event listing page has no parameter options to configure."
+               label="Event type ID filter (leave empty for no filtering)."
           />
         <field name="task"
                type="hidden"
