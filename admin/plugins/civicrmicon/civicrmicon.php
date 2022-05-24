@@ -62,6 +62,7 @@ class plgQuickiconCivicrmicon extends JPlugin {
         .icon-civicrm, .icon-civicrm-open {
           {$additonalAttributes}
           background-image:url(\"{$img}\");
+          background-repeat: no-repeat;
         }
       ";
       $document = JFactory::getDocument();
