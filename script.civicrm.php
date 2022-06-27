@@ -32,12 +32,12 @@ class Com_CiviCRMInstallerScript {
     $liveSite        = substr_replace(JURI::root(), '', -1, 1);
     $configTaskUrl   = $liveSite . "/administrator/?option=com_civicrm&task=civicrm/admin/configtask&reset=1";
     $upgradeUrl      = $liveSite . "/administrator/?option=com_civicrm&task=civicrm/upgrade&reset=1";
-    $registerSiteURL = "http://civicrm.org/civicrm/profile/create?reset=1&gid=15";
+    $registerSiteURL = "https://civicrm.org/register-site";
 
-    require_once 'CRM/Utils/System.php';
+   require_once 'CRM/Utils/System.php';
     require_once 'CRM/Utils/Array.php';
     if ($civicrmUpgrade) {
-      $docLink = CRM_Utils_System::docURL2('Installation and Upgrades', TRUE, 'Upgrade Guide',NULL,NULL,"wiki");
+      $docLink  = "https://docs.civicrm.org/sysadmin/en/latest/upgrade/#after-upgrading";
       // UPGRADE successful status and links
       $content = '
   <center>
@@ -53,10 +53,10 @@ class Com_CiviCRMInstallerScript {
   </center>';
     }
     else {
-      $docLink  = CRM_Utils_System::docURL2('Installation and Upgrades', FALSE, 'Installation Guide',NULL,NULL,"wiki");
-      $frontEnd = CRM_Utils_System::docURL2('Configuring Front-end Profile Listings and Forms in Joomla! Sites', FALSE, 'Create front-end forms and searchable directories using Profiles',NULL,NULL,"wiki");
-      $contri   = CRM_Utils_System::docURL2('Displaying Online Contribution Pages in Joomla! Frontend Sites', FALSE, 'Create online contribution pages',NULL,NULL,"wiki");
-      $event    = CRM_Utils_System::docURL2('Configuring Front-end Event Info and Registration in Joomla! Sites', FALSE, 'Create events with online event registration',NULL,NULL,"wiki");
+      $docLink  = "https://docs.civicrm.org/installation/en/latest/joomla/";
+      $frontEnd = "https://docs.civicrm.org/user/en/latest/organising-your-data/profiles/";
+      $contri   = "https://docs.civicrm.org/user/en/latest/contributions/online-contributions/";
+      $event    = "https://docs.civicrm.org/user/en/latest/events/what-is-civievent/";
 
       // INSTALL successful status and links
       $content = '
@@ -65,13 +65,13 @@ class Com_CiviCRMInstallerScript {
     <tr>
         <td>
             <strong>CiviCRM component files and database tables have been INSTALLED <font color="green">successfully</font></strong>.
-            <p><strong>Please review the ' . $docLink . ' for any additional steps required to complete the installation.</strong></p>
+            <p><strong>Please review the <a href="' . $docLink . '">Installation Guide</a> for any additional steps required to complete the installation.</strong></p>
             <p><strong>Then use the <a href="' . $configTaskUrl . '">Configuration Checklist</a> to review and configure CiviCRM settings for your new site.</strong></p>
             <p><strong>Additional Resources:</strong>
                 <ul>
-                    <li>' . $frontEnd . '</li>
-                    <li>' . $contri . '</li>
-                    <li>' . $event . '</li>
+                    <li><a href="' . $frontEnd . '">Create front-end forms and searchable directories using Profiles</a></li>
+                    <li><a href="' . $contri . '">Create online contribution pages</a></li>
+                    <li><a href="' . $event . '">Create events with online event registration</a></li>
                 </ul>
             </p>
            <p><strong>We have integrated KCFinder with CKEditor and TinyMCE, which enables user to upload images. Note that all the images uploaded using KCFinder will be public.</strong>
