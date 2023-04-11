@@ -73,15 +73,6 @@ function civicrm_setup() {
   if (!is_dir($compileDir)) {
     JFolder::create($compileDir, 0777);
   }
-
-  $db = JFactory::getDBO();
-  $db->setQuery(' SELECT count( * )
-FROM information_schema.tables
-WHERE table_name LIKE "civicrm_domain"
-AND table_schema = "' . $jConfig->db . '" ');
-
-  global $civicrmUpgrade;
-  $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
 }
 
 function civicrm_write_file($name, &$buffer) {
@@ -95,6 +86,22 @@ function civicrm_main() {
 
   // setup vars
   $configFile = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.settings.php';
+
+  if (is_readable($configFile)) {
+    require_once $configFile;
+
+    if (defined('CIVICRM_DSN')) {
+      $civiDSNParts = DB::parseDSN(CIVICRM_DSN);
+      $db = JFactory::getDBO();
+
+      $db->setQuery(' SELECT count( * )
+      FROM information_schema.tables
+      WHERE table_name LIKE "civicrm_domain"
+      AND table_schema = "' . $civiDSNParts['database'] . '" ');
+
+      $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
+    }
+  }
 
   // generate backend config file
   $string = "
@@ -120,7 +127,7 @@ CRM_Core_ClassLoader::singleton()->register();
 
   $liveSite = substr_replace(JURI::root(), '', -1, 1);
   if ($civicrmUpgrade) {
-    require_once $configFile;
+    //require_once $configFile;
     if (defined('CIVICRM_SITE_KEY')) {
       $siteKey = CIVICRM_SITE_KEY;
     }
@@ -228,20 +235,31 @@ function civicrm_source($fileName, $lineMode = FALSE) {
 }
 
 function civicrm_config($frontend = FALSE, $siteKey, $credKeys, $signKeys) {
-  global $adminPath, $compileDir;
+  global $adminPath, $compileDir, $civicrmUpgrade;
 
   $jConfig = new JConfig();
 
+  if ($civicrmUpgrade) {
+    $civiDSNParts = DB::parseDSN(CIVICRM_DSN);
+  } else {
+    $civiDSNParts = [
+      'username' => $jConfig->user,
+      'password' => $jConfig->password,
+      'hostspec' => $jConfig->host,
+      'database' => $jConfig->db,
+    ];
+  }
+  
   $liveSite = substr_replace(JURI::root(), '', -1, 1);
   $params = array(
     'cms' => 'Joomla',
     'crmRoot' => $adminPath . DIRECTORY_SEPARATOR . 'civicrm',
     'templateCompileDir' => $compileDir,
     'baseURL' => $liveSite . '/administrator/',
-    'dbUser' => $jConfig->user,
-    'dbPass' => $jConfig->password,
-    'dbHost' => $jConfig->host,
-    'dbName' => $jConfig->db,
+    'dbUser' => $civiDSNParts['username'],
+    'dbPass' => $civiDSNParts['password'],
+    'dbHost' => $civiDSNParts['hostspec'],
+    'dbName' => $civiDSNParts['database'],
     'CMSdbUser' => $jConfig->user,
     'CMSdbPass' => $jConfig->password,
     'CMSdbHost' => $jConfig->host,
