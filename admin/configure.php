@@ -79,26 +79,8 @@ function civicrm_main() {
 
   civicrm_backend_config($setup->getModel()->settingsPath, $adminPath);
   $setup->installFiles();
-
-  define('CIVICRM_SETTINGS_PATH', $setup->getModel()->settingsPath);
-  include_once CIVICRM_SETTINGS_PATH;
-
-  // for install case only
   if (!$civicrmUpgrade) {
-    $sqlPath = $adminPath . DIRECTORY_SEPARATOR . 'civicrm' . DIRECTORY_SEPARATOR . 'sql';
-
-    civicrm_source($sqlPath . DIRECTORY_SEPARATOR . 'civicrm.mysql');
-    civicrm_source($sqlPath . DIRECTORY_SEPARATOR . 'civicrm_data.mysql');
-
-    require_once 'CRM/Core/ClassLoader.php';
-    CRM_Core_ClassLoader::singleton()->register();
-
-    require_once 'CRM/Core/Config.php';
-    $config = CRM_Core_Config::singleton();
-
-    // now also build the menu
-    require_once 'CRM/Core/Menu.php';
-    CRM_Core_Menu::store();
+    $setup->installDatabase();
   }
 }
 
@@ -134,56 +116,6 @@ CRM_Core_ClassLoader::singleton()->register();
   return $string;
 }
 
-function civicrm_source($fileName, $lineMode = FALSE) {
-
-  if (!defined('DB_DSN_MODE')) {
-    define('DB_DSN_MODE', 'auto');
-  }
-
-  $dsn = CIVICRM_DSN;
-
-  require_once 'DB.php';
-
-  $db = DB::connect($dsn);
-  if (PEAR::isError($db)) {
-    die("Cannot open $dsn: " . $db->getMessage());
-  }
-
-  if (!$lineMode) {
-    $string = file_get_contents($fileName);
-
-    //get rid of comments starting with # and --
-    $string = preg_replace("/^#[^\n]*$/m", "\n", $string);
-    $string = preg_replace("/^\-\-[^\n]*$/m", "\n", $string);
-
-    $queries = preg_split('/;\s*$/m', $string);
-
-    foreach ($queries as $query) {
-      $query = trim($query);
-      if (!empty($query)) {
-        $res =& $db->query($query);
-        if (PEAR::isError($res)) {
-          die("Cannot execute $query: " . $res->getMessage());
-        }
-      }
-    }
-  }
-  else {
-    $fd = fopen($fileName, "r");
-    while ($string = fgets($fd)) {
-      $string = ereg_replace("\n#[^\n]*\n", "\n", $string);
-      $string = ereg_replace("\n\-\-[^\n]*\n", "\n", $string);
-      $string = trim($string);
-      if (!empty($string)) {
-        $res =& $db->query($string);
-        if (PEAR::isError($res)) {
-          die("Cannot execute $string: " . $res->getMessage());
-        }
-      }
-    }
-  }
-}
-
 /**
  * @param string $adminPath
  * @return \Civi\Setup
@@ -214,6 +146,7 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
   ];
   $model->db = $model->cmsDb;
   $model->templateCompilePath = implode(DIRECTORY_SEPARATOR, [JPATH_SITE, 'media', 'civicrm', 'templates_c']);
+  $model->lang = 'en_US'; /* Joomla installer historically only did `civicrm_data.mysql`. Should fix this... */
 
   if ($civicrmUpgrade) {
     require_once $setup->getModel()->settingsPath;
