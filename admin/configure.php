@@ -42,8 +42,6 @@ function civicrm_setup() {
 
   $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
 
-  $jConfig = new JConfig();
-
   civicrm_extract_code($adminPath);
 
   $scratchDir = JPATH_SITE . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'civicrm';
@@ -56,14 +54,8 @@ function civicrm_setup() {
     JFolder::create($compileDir, 0777);
   }
 
-  $db = JFactory::getDBO();
-  $db->setQuery(' SELECT count( * )
-FROM information_schema.tables
-WHERE table_name LIKE "civicrm_domain"
-AND table_schema = "' . $jConfig->db . '" ');
-
   global $civicrmUpgrade;
-  $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
+  $civicrmUpgrade = civicrm_detect_upgrade();
 }
 
 /**
@@ -290,6 +282,22 @@ function civicrm_config($frontend = FALSE, $siteKey, $credKeys, $signKeys) {
     $str = str_replace('%%' . $key . '%%', $value, $str);
   }
   return trim($str);
+}
+
+/**
+ * @return bool
+ *   TRUE if this installation operation is actually an upgrade.
+ */
+function civicrm_detect_upgrade(): bool {
+  $jConfig = new JConfig();
+  $db = JFactory::getDBO();
+  $db->setQuery(' SELECT count( * )
+FROM information_schema.tables
+WHERE table_name LIKE "civicrm_domain"
+AND table_schema = "' . $jConfig->db . '" ');
+
+  $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
+  return $civicrmUpgrade;
 }
 
 set_time_limit(4000); /* Ex: ZIP extraction */
