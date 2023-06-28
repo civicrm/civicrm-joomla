@@ -45,25 +45,7 @@ function civicrm_setup() {
   $jConfig = new JConfig();
   set_time_limit(4000);
 
-  // Path to the archive
-  $archivename = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.zip';
-
-  // a bit of support for the non-alternaive joomla install
-  if (file_exists($archivename)) {
-    // ensure that the site has native zip, else abort
-    if (
-      !function_exists('zip_open') ||
-      !function_exists('zip_read')
-    ) {
-      echo "Your PHP version is missing  zip functionality. Please ask your system administrator / hosting provider to recompile PHP with zip support.<p>";
-      echo "If this is a new install, you will need to uninstall CiviCRM from the Joomla Extension Manager.<p>";
-      exit();
-    }
-
-    $extractdir = $adminPath;
-    $archive = new Joomla\Archive\Archive();
-    $archive->extract($archivename, $extractdir);
-  }
+  civicrm_extract_code($adminPath);
 
   $scratchDir = JPATH_SITE . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'civicrm';
   if (!is_dir($scratchDir)) {
@@ -83,6 +65,33 @@ AND table_schema = "' . $jConfig->db . '" ');
 
   global $civicrmUpgrade;
   $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
+}
+
+/**
+ * If present, convert "admin/civicrm.zip" to "admin/civicrm/".
+ *
+ * @param string $adminPath
+ * @return void
+ */
+function civicrm_extract_code(string $adminPath) {
+  $archivename = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.zip';
+
+  // a bit of support for the non-alternaive joomla install
+  if (file_exists($archivename)) {
+    // ensure that the site has native zip, else abort
+    if (
+      !function_exists('zip_open') ||
+      !function_exists('zip_read')
+    ) {
+      echo "Your PHP version is missing  zip functionality. Please ask your system administrator / hosting provider to recompile PHP with zip support.<p>";
+      echo "If this is a new install, you will need to uninstall CiviCRM from the Joomla Extension Manager.<p>";
+      exit();
+    }
+
+    $extractdir = $adminPath;
+    $archive = new Joomla\Archive\Archive();
+    $archive->extract($archivename, $extractdir);
+  }
 }
 
 function civicrm_write_file($name, &$buffer) {
