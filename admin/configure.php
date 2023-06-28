@@ -29,6 +29,7 @@ defined('_JEXEC') or die('No direct access allowed');
 
 global $civicrmUpgrade;
 $civicrmUpgrade = FALSE;
+
 function civicrm_setup() {
   // Check for php version and ensure its greater than minPhpVersion
   $minPhpVersion = '7.3.0';
@@ -60,7 +61,7 @@ function civicrm_setup() {
     }
 
     $extractdir = $adminPath;
-    $archive = new Joomla\Archive\Archive;
+    $archive = new Joomla\Archive\Archive();
     $archive->extract($archivename, $extractdir);
   }
 
