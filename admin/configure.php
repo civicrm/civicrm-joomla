@@ -43,7 +43,6 @@ function civicrm_setup() {
   $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
 
   $jConfig = new JConfig();
-  set_time_limit(4000);
 
   civicrm_extract_code($adminPath);
 
@@ -293,4 +292,5 @@ function civicrm_config($frontend = FALSE, $siteKey, $credKeys, $signKeys) {
   return trim($str);
 }
 
+set_time_limit(4000); /* Ex: ZIP extraction */
 civicrm_main();
