@@ -57,10 +57,6 @@ function civicrm_extract_code(string $adminPath) {
   }
 }
 
-function civicrm_write_file($name, &$buffer) {
-  JFile::write($name, $buffer);
-}
-
 function civicrm_main() {
   global $civicrmUpgrade, $adminPath;
 
@@ -108,7 +104,7 @@ CRM_Core_ClassLoader::singleton()->register();
 ";
 
   $string = trim($string);
-  civicrm_write_file($adminPath . DIRECTORY_SEPARATOR .
+  JFile::write($adminPath . DIRECTORY_SEPARATOR .
     'civicrm' . DIRECTORY_SEPARATOR .
     'civicrm.config.php',
     $string
