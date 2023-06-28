@@ -107,26 +107,7 @@ function civicrm_main() {
   $configFile = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.settings.php';
 
   // generate backend config file
-  $string = "
-<?php
-define('CIVICRM_SETTINGS_PATH', '$configFile');
-\$error = @include_once( '$configFile' );
-if ( \$error == false ) {
-    echo \"Could not load the settings file at: {$configFile}\n\";
-    exit( );
-}
-
-// Load class loader
-require_once \$civicrm_root . '/CRM/Core/ClassLoader.php';
-CRM_Core_ClassLoader::singleton()->register();
-";
-
-  $string = trim($string);
-  civicrm_write_file($adminPath . DIRECTORY_SEPARATOR .
-    'civicrm' . DIRECTORY_SEPARATOR .
-    'civicrm.config.php',
-    $string
-  );
+  civicrm_backend_config($configFile, $adminPath);
 
   $liveSite = substr_replace(JURI::root(), '', -1, 1);
   if ($civicrmUpgrade) {
@@ -185,6 +166,38 @@ CRM_Core_ClassLoader::singleton()->register();
     require_once 'CRM/Core/Menu.php';
     CRM_Core_Menu::store();
   }
+}
+
+/**
+ * Generate a "civicrm.config.php" file in the civicrm app-root.
+ * This (probably) allows backend tools like "extern/rest.php" or "bin/cli.php".
+ *
+ * @param string $configFile
+ * @param $adminPath
+ * @return string
+ */
+function civicrm_backend_config(string $configFile, $adminPath): string {
+  $string = "
+<?php
+define('CIVICRM_SETTINGS_PATH', '$configFile');
+\$error = @include_once( '$configFile' );
+if ( \$error == false ) {
+    echo \"Could not load the settings file at: {$configFile}\n\";
+    exit( );
+}
+
+// Load class loader
+require_once \$civicrm_root . '/CRM/Core/ClassLoader.php';
+CRM_Core_ClassLoader::singleton()->register();
+";
+
+  $string = trim($string);
+  civicrm_write_file($adminPath . DIRECTORY_SEPARATOR .
+    'civicrm' . DIRECTORY_SEPARATOR .
+    'civicrm.config.php',
+    $string
+  );
+  return $string;
 }
 
 function civicrm_source($fileName, $lineMode = FALSE) {
