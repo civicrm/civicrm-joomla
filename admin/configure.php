@@ -62,7 +62,9 @@ function civicrm_write_file($name, &$buffer) {
 }
 
 function civicrm_main() {
-  global $civicrmUpgrade, $adminPath, $compileDir;
+  global $civicrmUpgrade, $adminPath;
+
+  $civicrmUpgrade = civicrm_detect_upgrade();
 
   // Check for php version and ensure its greater than minPhpVersion
   $minPhpVersion = '7.3.0';
@@ -72,65 +74,13 @@ function civicrm_main() {
   }
 
   $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
-
   civicrm_extract_code($adminPath);
+  $setup = civicrm_setup_instance($adminPath, $civicrmUpgrade);
 
-  $scratchDir = JPATH_SITE . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'civicrm';
-  if (!is_dir($scratchDir)) {
-    JFolder::create($scratchDir, 0777);
-  }
+  civicrm_backend_config($setup->getModel()->settingsPath, $adminPath);
+  $setup->installFiles();
 
-  $compileDir = $scratchDir . DIRECTORY_SEPARATOR . 'templates_c';
-  if (!is_dir($compileDir)) {
-    JFolder::create($compileDir, 0777);
-  }
-
-  $civicrmUpgrade = civicrm_detect_upgrade();
-
-  // setup vars
-  $configFile = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.settings.php';
-
-  // generate backend config file
-  civicrm_backend_config($configFile, $adminPath);
-
-  $liveSite = substr_replace(JURI::root(), '', -1, 1);
-  if ($civicrmUpgrade) {
-    require_once $configFile;
-    if (defined('CIVICRM_SITE_KEY')) {
-      $siteKey = CIVICRM_SITE_KEY;
-    }
-    if (defined('CIVICRM_CRED_KEYS')) {
-      $credKeys = CIVICRM_CRED_KEYS;
-    }
-    if (defined('CIVICRM_SIGN_KEYS')) {
-      $signKeys = CIVICRM_SIGN_KEYS;
-    }
-  }
-
-  if (empty($siteKey)) {
-    $siteKey = preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37)));
-  }
-  if (empty($credKeys)) {
-    $credKeys = 'aes-cbc:hkdf-sha256:' . preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37)));
-  }
-  if (empty($signKeys)) {
-    $signKeys = 'jwt-hs256:hkdf-sha256:' . preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37)));
-  }
-
-  // generate backend settings file
-  $string = civicrm_config(FALSE, $siteKey, $credKeys, $signKeys);
-  civicrm_write_file($configFile, $string);
-
-  // generate frontend settings file
-  $string = civicrm_config(TRUE, $siteKey, $credKeys, $signKeys);
-  civicrm_write_file(JPATH_SITE . DIRECTORY_SEPARATOR .
-    'components' . DIRECTORY_SEPARATOR .
-    'com_civicrm' . DIRECTORY_SEPARATOR .
-    'civicrm.settings.php',
-    $string
-  );
-
-  define('CIVICRM_SETTINGS_PATH', $configFile);
+  define('CIVICRM_SETTINGS_PATH', $setup->getModel()->settingsPath);
   include_once CIVICRM_SETTINGS_PATH;
 
   // for install case only
@@ -234,47 +184,51 @@ function civicrm_source($fileName, $lineMode = FALSE) {
   }
 }
 
-function civicrm_config($frontend = FALSE, $siteKey, $credKeys, $signKeys) {
-  global $adminPath, $compileDir;
+/**
+ * @param string $adminPath
+ * @return \Civi\Setup
+ * @throws \Exception
+ */
+function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\Setup {
+  $civicrmCore = $adminPath . DIRECTORY_SEPARATOR . 'civicrm';
+
+  require_once implode(DIRECTORY_SEPARATOR, [$civicrmCore, 'CRM', 'Core', 'ClassLoader.php']);
+  CRM_Core_ClassLoader::singleton()->register();
+  \Civi\Setup::assertProtocolCompatibility(1.0);
+  \Civi\Setup::init([
+    'cms' => 'Joomla',
+    'srcPath' => $civicrmCore,
+    'db' => ['fixme'],
+    'settingsPath' => $adminPath . DIRECTORY_SEPARATOR . 'civicrm.settings.php',
+  ]);
+  $setup = Civi\Setup::instance();
+  $model = $setup->getModel();
 
   $jConfig = new JConfig();
+  $model->cmsBaseUrl = substr_replace(JURI::root(), '', -1, 1);
+  $model->cmsDb = [
+    'username' => $jConfig->user,
+    'password' => $jConfig->password,
+    'server' => $jConfig->host,
+    'database' => $jConfig->db,
+  ];
+  $model->db = $model->cmsDb;
+  $model->templateCompilePath = implode(DIRECTORY_SEPARATOR, [JPATH_SITE, 'media', 'civicrm', 'templates_c']);
 
-  $liveSite = substr_replace(JURI::root(), '', -1, 1);
-  $params = array(
-    'cms' => 'Joomla',
-    'crmRoot' => $adminPath . DIRECTORY_SEPARATOR . 'civicrm',
-    'templateCompileDir' => $compileDir,
-    'baseURL' => $liveSite . '/administrator/',
-    'dbUser' => $jConfig->user,
-    'dbPass' => $jConfig->password,
-    'dbHost' => $jConfig->host,
-    'dbName' => $jConfig->db,
-    'CMSdbUser' => $jConfig->user,
-    'CMSdbPass' => $jConfig->password,
-    'CMSdbHost' => $jConfig->host,
-    'CMSdbName' => $jConfig->db,
-    'siteKey' => $siteKey,
-    'credKeys' => $credKeys,
-    'signKeys' => $signKeys,
-    'dbSSL' => '',
-    'CMSdbSSL' => '',
-  );
-
-  if ($frontend) {
-    $params['baseURL'] = $liveSite . '/';
+  if ($civicrmUpgrade) {
+    require_once $setup->getModel()->settingsPath;
+    if (defined('CIVICRM_SITE_KEY')) {
+      $setup->getModel()->siteKey = CIVICRM_SITE_KEY;
+    }
+    if (defined('CIVICRM_CRED_KEYS')) {
+      $setup->getModel()->credKeys = explode(' ', CIVICRM_CRED_KEYS);
+    }
+    if (defined('CIVICRM_SIGN_KEYS')) {
+      $setup->getModel()->signKeys = explode(' ', CIVICRM_SIGN_KEYS);
+    }
   }
 
-  $str = file_get_contents($adminPath . DIRECTORY_SEPARATOR .
-    'civicrm' . DIRECTORY_SEPARATOR .
-    'templates' . DIRECTORY_SEPARATOR .
-    'CRM' . DIRECTORY_SEPARATOR .
-    'common' . DIRECTORY_SEPARATOR .
-    'civicrm.settings.php.template'
-  );
-  foreach ($params as $key => $value) {
-    $str = str_replace('%%' . $key . '%%', $value, $str);
-  }
-  return trim($str);
+  return $setup;
 }
 
 /**
