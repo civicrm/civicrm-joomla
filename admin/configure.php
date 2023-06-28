@@ -30,34 +30,6 @@ defined('_JEXEC') or die('No direct access allowed');
 global $civicrmUpgrade;
 $civicrmUpgrade = FALSE;
 
-function civicrm_setup() {
-  // Check for php version and ensure its greater than minPhpVersion
-  $minPhpVersion = '7.3.0';
-  if (version_compare(PHP_VERSION, $minPhpVersion) < 0) {
-    echo "CiviCRM requires PHP version $minPhpVersion or greater. You are running PHP version " . PHP_VERSION . "<p>";
-    exit();
-  }
-
-  global $adminPath, $compileDir;
-
-  $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
-
-  civicrm_extract_code($adminPath);
-
-  $scratchDir = JPATH_SITE . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'civicrm';
-  if (!is_dir($scratchDir)) {
-    JFolder::create($scratchDir, 0777);
-  }
-
-  $compileDir = $scratchDir . DIRECTORY_SEPARATOR . 'templates_c';
-  if (!is_dir($compileDir)) {
-    JFolder::create($compileDir, 0777);
-  }
-
-  global $civicrmUpgrade;
-  $civicrmUpgrade = civicrm_detect_upgrade();
-}
-
 /**
  * If present, convert "admin/civicrm.zip" to "admin/civicrm/".
  *
@@ -90,9 +62,30 @@ function civicrm_write_file($name, &$buffer) {
 }
 
 function civicrm_main() {
-  global $civicrmUpgrade, $adminPath;
+  global $civicrmUpgrade, $adminPath, $compileDir;
 
-  civicrm_setup();
+  // Check for php version and ensure its greater than minPhpVersion
+  $minPhpVersion = '7.3.0';
+  if (version_compare(PHP_VERSION, $minPhpVersion) < 0) {
+    echo "CiviCRM requires PHP version $minPhpVersion or greater. You are running PHP version " . PHP_VERSION . "<p>";
+    exit();
+  }
+
+  $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
+
+  civicrm_extract_code($adminPath);
+
+  $scratchDir = JPATH_SITE . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'civicrm';
+  if (!is_dir($scratchDir)) {
+    JFolder::create($scratchDir, 0777);
+  }
+
+  $compileDir = $scratchDir . DIRECTORY_SEPARATOR . 'templates_c';
+  if (!is_dir($compileDir)) {
+    JFolder::create($compileDir, 0777);
+  }
+
+  $civicrmUpgrade = civicrm_detect_upgrade();
 
   // setup vars
   $configFile = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.settings.php';
