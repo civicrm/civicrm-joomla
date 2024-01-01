@@ -25,7 +25,7 @@
           />
         <field name="task"
                type="hidden"
-               default="civicrm/event/ical"
+               default="civicrm/event/list"
                required="true"
           />
         <field name="reset"
