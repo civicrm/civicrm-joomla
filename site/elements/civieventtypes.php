@@ -56,10 +56,7 @@ class JFormFieldCiviEventTypes extends JFormField
 
     $groupIdForEventTypes = $this->getGroupIdForEventTypes();
 
-    $eventTypeResults = \Civi\Api4\OptionValue::get(TRUE)
-      ->addWhere('option_group_id', '=', $groupIdForEventTypes)
-      ->execute();
-    $eventTypes = iterator_to_array($eventTypeResults);
+    $eventTypes = $this->getEventTypes($groupIdForEventTypes);
 
     $options = array();
     $options[] = JHTML::_('select.option', '', ''); // Add an empty first option
@@ -69,6 +66,14 @@ class JFormFieldCiviEventTypes extends JFormField
 
     return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
   }
+
+    private function getEventTypes($groupIdForEventTypes)
+    {
+        $eventTypeResults = \Civi\Api4\OptionValue::get(TRUE)
+          ->addWhere('option_group_id', '=', $groupIdForEventTypes)
+          ->execute();
+        return iterator_to_array($eventTypeResults);
+    }
 
     private function getGroupIdForEventTypes()
     {
@@ -81,4 +86,3 @@ class JFormFieldCiviEventTypes extends JFormField
         return $groupIdForEventTypes;
     }
 }
-
