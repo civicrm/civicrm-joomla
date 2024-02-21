@@ -5,6 +5,8 @@
 
 defined('_JEXEC') or die('No direct access allowed');
 
+use Joomla\CMS\Factory;
+
 define('CIVICRM_SETTINGS_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'civicrm.settings.php');
 include_once CIVICRM_SETTINGS_PATH;
 
@@ -48,36 +50,30 @@ function civicrm_initialize() {
 function civicrm_invoke() {
   civicrm_initialize();
 
-  // add all the values from the itemId param
-  // overrride the GET values if conflict
-  if (!empty($_REQUEST['Itemid'])) {
-    $component = JComponentHelper::getComponent('com_civicrm');
-    $app = JFactory::getApplication();
-    $menu = $app->getMenu();
-    $params = $menu->getParams($app->input->get('Itemid'));
+  $app = Factory::getApplication();
+  $input = $app->input;
+  $itemId = $input->getInt('Itemid', 0);
+
+  if ($itemId) {
     $args = array('task', 'id', 'gid', 'pageId', 'action', 'csid', 'component');
-    $view = CRM_Utils_Array::value('view', $_REQUEST);
+    $view = $input->getString('view');
     if ($view) {
       $args[] = 'reset';
     }
 
     //look for menu item config in both request and params (backwards compatibility)
-    foreach ($args as $a) {
-      $val = CRM_Utils_Array::value($a, $_REQUEST, NULL);
-      $valp = $params->get($a, NULL);
-      if (($val !== NULL || $valp !== NULL) && $view) {
-        $val = (!empty($val)) ? $val : $valp;
-        $_REQUEST[$a] = $_GET[$a] = $val;
-      }
+    foreach ($args as $arg) {
+      $val = $input->getString($arg, NULL);
+      $_GET[$arg] = $_REQUEST[$arg] = $val; // $_GET and $_REQUEST are used by CiviCRM all over the place
     }
   }
 
-  $task = CRM_Utils_Array::value('task', $_GET, '');
+  $task = $_REQUEST['task'];
   $args = explode('/', trim($task));
 
   CRM_Core_Resources::singleton()->addCoreResources();
 
-  $user = JFactory::getUser();
+  $user = $app->getIdentity();
   CRM_Core_BAO_UFMatch::synchronize($user, FALSE, 'Joomla', 'Individual', TRUE);
 
   define('CIVICRM_UF_HEAD', TRUE);
