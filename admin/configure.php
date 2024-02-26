@@ -60,8 +60,6 @@ function civicrm_extract_code(string $adminPath) {
 function civicrm_main() {
   global $civicrmUpgrade, $adminPath;
 
-  $civicrmUpgrade = civicrm_detect_upgrade();
-
   // Check for php version and ensure its greater than minPhpVersion
   $minPhpVersion = '7.4.0';
   if (version_compare(PHP_VERSION, $minPhpVersion) < 0) {
@@ -71,6 +69,9 @@ function civicrm_main() {
 
   $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
   civicrm_extract_code($adminPath);
+
+  $civicrmUpgrade = civicrm_detect_upgrade();
+
   $setup = civicrm_setup_instance($adminPath, $civicrmUpgrade);
 
   civicrm_backend_config($setup->getModel()->settingsPath, $adminPath);
@@ -146,6 +147,13 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
 
   if ($civicrmUpgrade) {
     require_once $setup->getModel()->settingsPath;
+    if (defined('CIVICRM_DSN')) {
+      $civiDSNParts = parse_url(CIVICRM_DSN);
+      $model->db['username'] = $civiDSNParts['user'];
+      $model->db['password'] = $civiDSNParts['pass'];
+      $model->db['server'] = $civiDSNParts['host'];
+      $model->db['database'] = substr($civiDSNParts['path'], 1);
+    }
     if (defined('CIVICRM_SITE_KEY')) {
       $setup->getModel()->siteKey = CIVICRM_SITE_KEY;
     }
@@ -165,12 +173,25 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
  *   TRUE if this installation operation is actually an upgrade.
  */
 function civicrm_detect_upgrade(): bool {
+  global $adminPath;
+  $configFile = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.settings.php';
   $jConfig = new JConfig();
+  $database = $jConfig->db;
+
+  if (is_readable($configFile)) {
+    require_once $configFile;
+
+    if (defined("CIVICRM_DSN")) {
+      $civiDSNParts = parse_url(CIVICRM_DSN);
+      $database = substr($civiDSNParts['path'], 1);
+    }
+  }
+
   $db = JFactory::getDBO();
   $db->setQuery(' SELECT count( * )
 FROM information_schema.tables
 WHERE table_name LIKE "civicrm_domain"
-AND table_schema = "' . $jConfig->db . '" ');
+AND table_schema = "' . $database . '" ');
 
   $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
   return $civicrmUpgrade;
