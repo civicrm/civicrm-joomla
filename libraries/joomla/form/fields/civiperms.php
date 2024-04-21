@@ -304,8 +304,8 @@ class JFormFieldCiviperms extends JFormFieldRules {
       $translation = self::$civiConfig->userPermissionClass->translateJoomlaPermission($key);
       $actions[] = (object) array(
         'name' => $translation[0],
-        'title' => $perm[0],
-        'description' => $perm[1],
+        'title' => $perm['label'],
+        'description' => $perm['description'],
       );
     }
 
