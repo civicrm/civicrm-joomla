@@ -150,7 +150,7 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
     if (defined('CIVICRM_DSN')) {
       $civiDSNParts = parse_url(CIVICRM_DSN);
       $model->db['username'] = $civiDSNParts['user'];
-      $model->db['password'] = $civiDSNParts['pass'];
+      $model->db['password'] = urldecode($civiDSNParts['pass']);
       $model->db['server'] = $civiDSNParts['host'];
       $model->db['database'] = substr($civiDSNParts['path'], 1);
     }
