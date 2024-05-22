@@ -152,6 +152,9 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
       $model->db['username'] = $civiDSNParts['username'];
       $model->db['password'] = $civiDSNParts['password'];
       $model->db['server'] = $civiDSNParts['hostspec'];
+      if (!empty($civiDSNParts['port'])) {
+        $model->db['server'] .= ':' . $civiDSNParts['port'];
+      }
       $model->db['database'] = $civiDSNParts['database'];
     }
     if (defined('CIVICRM_SITE_KEY')) {
