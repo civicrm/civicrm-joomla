@@ -148,11 +148,11 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
   if ($civicrmUpgrade) {
     require_once $setup->getModel()->settingsPath;
     if (defined('CIVICRM_DSN')) {
-      $civiDSNParts = parse_url(CIVICRM_DSN);
-      $model->db['username'] = urldecode(stripslashes($civiDSNParts['user']));
-      $model->db['password'] = urldecode(stripslashes($civiDSNParts['pass']));
-      $model->db['server'] = implode(':', array_map('urldecode', explode(':', $civiDSNParts['host'])));
-      $model->db['database'] = urldecode(stripslashes(substr($civiDSNParts['path'], 1)));
+      $civiDSNParts = DB::parseDSN(CIVICRM_DSN);
+      $model->db['username'] = $civiDSNParts['username'];
+      $model->db['password'] = $civiDSNParts['password'];
+      $model->db['server'] = $civiDSNParts['hostspec'];
+      $model->db['database'] = $civiDSNParts['database'];
     }
     if (defined('CIVICRM_SITE_KEY')) {
       $setup->getModel()->siteKey = CIVICRM_SITE_KEY;
