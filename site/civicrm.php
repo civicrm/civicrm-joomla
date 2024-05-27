@@ -55,20 +55,27 @@ function civicrm_invoke() {
   $itemId = $input->getInt('Itemid', 0);
 
   if ($itemId) {
+    // These are the arguments we need to propagate to CiviCRM through $_REQUEST
     $args = array('task', 'id', 'gid', 'pageId', 'action', 'csid', 'component');
-    $view = $input->getString('view');
+
+    $view = $_REQUEST['view'] ?? NULL; // $input->getString('view'); would be the "correct" way,
+    // but it does not work because it will return a view when
+    // this statement does not. I don't know why.
     if ($view) {
-      $args[] = 'reset';
+      $args[] = 'reset'; // If we have a view, we should reset any input
     }
 
-    //look for menu item config in both request and params (backwards compatibility)
+    // look for menu item config and params
     foreach ($args as $arg) {
       $val = $input->getString($arg, NULL);
-      $_GET[$arg] = $_REQUEST[$arg] = $val; // $_GET and $_REQUEST are used by CiviCRM all over the place
+      if ($val && $view) {
+        $_GET[$arg] = $_REQUEST[$arg] = $val; // $_GET and $_REQUEST are used by CiviCRM all over the place
+        // so we need to set them although Joomla discourages their usage.
+      }
     }
   }
 
-  $task = $_REQUEST['task'];
+  $task = $input->getString('task', NULL);
   $args = explode('/', trim($task));
 
   CRM_Core_Resources::singleton()->addCoreResources();
