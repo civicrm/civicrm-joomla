@@ -185,8 +185,11 @@ function civicrm_detect_upgrade(): bool {
     require_once $configFile;
 
     if (defined("CIVICRM_DSN")) {
-      $civiDSNParts = parse_url(CIVICRM_DSN);
-      $database = substr($civiDSNParts['path'], 1);
+      if (!class_exists('DB')) {
+        require_once 'DB.php';
+      }
+      $civiDSNParts = DB::parseDSN(CIVICRM_DSN);
+      $database = $civiDSNParts['database'];
     }
   }
 
