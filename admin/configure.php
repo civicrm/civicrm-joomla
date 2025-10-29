@@ -105,7 +105,7 @@ CRM_Core_ClassLoader::singleton()->register();
 ";
 
   $string = trim($string);
-  JFile::write($adminPath . DIRECTORY_SEPARATOR .
+  \Joomla\CMS\Filesystem\File::write($adminPath . DIRECTORY_SEPARATOR .
     'civicrm' . DIRECTORY_SEPARATOR .
     'civicrm.config.php',
     $string
@@ -134,7 +134,7 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
   $model = $setup->getModel();
 
   $jConfig = new JConfig();
-  $model->cmsBaseUrl = substr_replace(JURI::root(), '', -1, 1);
+  $model->cmsBaseUrl = substr_replace(\Joomla\CMS\Uri\Uri::root(), '', -1, 1);
   $model->cmsDb = [
     'username' => $jConfig->user,
     'password' => $jConfig->password,
@@ -193,7 +193,12 @@ function civicrm_detect_upgrade(): bool {
     }
   }
 
-  $db = JFactory::getDBO();
+  if (version_compare(JVERSION, '4.0', 'ge')) {
+    $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+  }
+  else {
+    $db = JFactory::getDbo();
+  }
   $db->setQuery(' SELECT count( * )
 FROM information_schema.tables
 WHERE table_name LIKE "civicrm_domain"

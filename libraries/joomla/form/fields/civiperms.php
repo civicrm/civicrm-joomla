@@ -8,6 +8,9 @@ if (version_compare(JVERSION, '4.0.0', 'lt') && file_exists(JPATH_SITE . '/libra
 
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 
 class JFormFieldCiviperms extends JFormFieldRules {
 
@@ -49,9 +52,18 @@ class JFormFieldCiviperms extends JFormFieldRules {
    * the issue ID in this comment and reference it in the code as well.
    */
   protected function getInput() {
-    JHtml::_('bootstrap.tooltip');
+    HTMLHelper::_('bootstrap.tooltip');
     // Add Javascript for permission change
-    JHtml::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
+    if (version_compare(JVERSION, '4.0.0', 'lt')) {
+      HTMLHelper::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
+    }
+    else {
+      \Joomla\CMS\Factory::getDocument()->getWebAssetManager()
+      ->useStyle('webcomponent.field-permissions')
+      ->useScript('webcomponent.field-permissions')
+      ->useStyle('webcomponent.joomla-tab')
+      ->useScript('webcomponent.joomla-tab');
+    }
     // Load JavaScript message titles
     Text::script('ERROR');
     Text::script('WARNING');
@@ -79,7 +91,12 @@ class JFormFieldCiviperms extends JFormFieldRules {
     // If the asset id is empty (component or new item).
     if (empty($assetId)) {
       // Get the component asset id as fallback.
-      $db = JFactory::getDbo();
+      if (version_compare(JVERSION, '4.0', 'ge')) {
+        $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+      }
+      else {
+        $db = JFactory::getDbo();
+      }
       $query = $db->getQuery(true)
           ->select($db->quoteName('id'))
           ->from($db->quoteName('#__assets'))
@@ -96,7 +113,12 @@ class JFormFieldCiviperms extends JFormFieldRules {
     // If not in global config we need the parent_id asset to calculate permissions.
     if (!$isGlobalConfig) {
       // In this case we need to get the component rules too.
-      $db = JFactory::getDbo();
+      if (version_compare(JVERSION, '4.0', 'ge')) {
+        $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+      }
+      else {
+        $db = JFactory::getDbo();
+      }
       $query = $db->getQuery(true)
           ->select($db->quoteName('parent_id'))
           ->from($db->quoteName('#__assets'))
@@ -130,7 +152,7 @@ class JFormFieldCiviperms extends JFormFieldRules {
     }
 
     // Ajax request data.
-    $ajaxUri = JRoute::_('index.php?option=com_config&task=config.store&format=json&' . JSession::getFormToken() . '=1');
+    $ajaxUri = Route::_('index.php?option=com_config&task=config.store&format=json&' . Session::getFormToken() . '=1');
 
     // Prepare output
     $html = array();

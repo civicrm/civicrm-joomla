@@ -70,14 +70,22 @@ function civicrm_initialize() {
   CRM_Core_Config::singleton()->userSystem->setMySQLTimeZone();
 }
 
-function plugin_init() {
-  //invoke plugins.
-  JPluginHelper::importPlugin('civicrm');
-  $app = JFactory::getApplication();
-  $app->triggerEvent('onCiviLoad');
+function plugin_init(String $joomlaVersion) {
+  if ($joomlaVersion !== 'Unknown' && version_compare($joomlaVersion, '4.0', 'ge')) {
+    \Joomla\CMS\Plugin\PluginHelper::importPlugin('civicrm');
+    $app = \Joomla\CMS\Factory::getApplication();
+    $app->triggerEvent('onCiviLoad');
+    \Joomla\CMS\Toolbar\ToolbarHelper::title('CiviCRM');
+  }
+  else {
+    //invoke plugins.
+    JPluginHelper::importPlugin('civicrm');
+    $app = JFactory::getApplication();
+    $app->triggerEvent('onCiviLoad');
 
-  // set page title
-  JToolBarHelper::title('CiviCRM');
+    // set page title
+    JToolBarHelper::title('CiviCRM');
+  }
   // We lose the PHP time zone default setting,so try to set it again.
   $joomlaUserTimezone = CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
   date_default_timezone_set($joomlaUserTimezone);
@@ -85,8 +93,14 @@ function plugin_init() {
 
 function civicrm_invoke() {
   civicrm_initialize();
-  plugin_init();
-  $user = JFactory::getUser();
+  $joomlaVersion = CRM_Core_Config::singleton()->userSystem->getVersion();
+  plugin_init($joomlVersion);
+  if ($joomlaVersion !== 'Unknown' && version_compare($joomlaVersion, '4.0', 'ge')) {
+    $user = \Joomla\CMS\Factory::getApplication()->getIdentity() ?? \Joomla\CMS\Factory::getContainer()->get(\Joomla\CMS\User\UserFactoryInterface::class)->loadUserById(0);
+  }
+  else {
+    $user = JFactory::getUser();
+  }
 
   /* bypass synchronize if running upgrade
    * to avoid any serious non-recoverable error
