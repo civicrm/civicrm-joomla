@@ -11,7 +11,6 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Component Helper
-jimport('joomla.application.component.helper');
 class CivicrmHelperApi {
   static function civiInit() {
     if (!defined('CIVICRM_SETTINGS_PATH')) {

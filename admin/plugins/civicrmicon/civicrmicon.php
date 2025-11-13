@@ -43,11 +43,18 @@ class plgQuickiconCivicrmicon extends JPlugin {
       return [];
     }
 
-    jimport('joomla.environment.uri');
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $baseUri = \Joomla\CMS\Uri\Uri::base();
+    }
+    else {
+      jimport('joomla.environment.uri');
+      $baseUri = JURI::base();
+    }
+
     $icon = array(
       array(
         'link' => 'index.php?option=com_civicrm',
-        'image' => JURI::base() . 'components/com_civicrm/civicrm/i/smallLogo.png',
+        'image' => $baseUri . 'components/com_civicrm/civicrm/i/smallLogo.png',
         'text' => 'CiviCRM',
         'id' => 'plg_quickicon_civicrmicon',
         'class' => $context == 'mod_quickicon' ? 'success' : '',

@@ -7,6 +7,7 @@
 // No direct access
 defined('_JEXEC') or die;
 
+// TODO: remove the below once JPlugin no longer referenced for J4+
 jimport('joomla.plugin.plugin');
 
 /**
@@ -32,7 +33,12 @@ class plgUserCivicrm extends JPlugin {
    * @throws Exception on error.
    */
   function onUserAfterSave($user, $isnew, $success, $msg) {
-    $app = JFactory::getApplication();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $app = \Joomla\CMS\Factory::getApplication();
+    }
+    else {
+      $app = JFactory::getApplication();
+    }
     self::civicrmResetNavigation();
   }
 
@@ -47,7 +53,12 @@ class plgUserCivicrm extends JPlugin {
    * @throws Exception on error.
    */
   function onUserAfterSaveGroup($var) {
-    $app = JFactory::getApplication();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $app = \Joomla\CMS\Factory::getApplication();
+    }
+    else {
+      $app = JFactory::getApplication();
+    }
     self::civicrmResetNavigation();
   }
 
@@ -64,7 +75,12 @@ class plgUserCivicrm extends JPlugin {
    * @throws Exception on error.
    */
   function onUserAfterDelete($user, $succes, $msg) {
-    $app = JFactory::getApplication();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $app = \Joomla\CMS\Factory::getApplication();
+    }
+    else {
+      $app = JFactory::getApplication();
+    }
 
     // Instantiate CiviCRM
     require_once JPATH_ROOT . '/administrator/components/com_civicrm/civicrm.settings.php';
@@ -86,8 +102,14 @@ class plgUserCivicrm extends JPlugin {
    */
   public function onUserLogin($user, $options = array()) {
     if (self::isAdminBackend()) {
-      $jUser = JFactory::getUser();
-      $jId = $jUser->get('id');
+      if (version_compare(JVERSION, '4.0', 'ge')) {
+        $jUser = \Joomla\CMS\Factory::getApplication()->getIdentity();
+        $jId = $jUser->id ?? 0;
+      }
+      else {
+        $jUser = JFactory::getUser();
+        $jId = $jUser->get('id');
+      }
       self::civicrmResetNavigation($jId);
     }
   }
@@ -133,7 +155,12 @@ class plgUserCivicrm extends JPlugin {
    * @return boolean True if in the Joomla Administrator backend otherwise false
    */
   private function isAdminBackend() {
-    $app = JFactory::getApplication();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $app = \Joomla\CMS\Factory::getApplication();
+    }
+    else {
+      $app = JFactory::getApplication();
+    }
 
     // Determine if we are in the Joomla administrator backend
     // In Joomla 3.7+ the isClient() method is used. In earlier versions use the isAdmin() method (deprecated in Joomla 4.0).
