@@ -33,10 +33,7 @@ class plgUserCivicrm extends JPlugin {
    * @throws Exception on error.
    */
   function onUserAfterSave($user, $isnew, $success, $msg) {
-    if (version_compare(JVERSION, '4.0', 'ge')) {
-      $app = \Joomla\CMS\Factory::getApplication();
-    }
-    else {
+    if (version_compare(JVERSION, '4.0', 'lt')) {
       $app = JFactory::getApplication();
     }
     self::civicrmResetNavigation();
@@ -53,10 +50,7 @@ class plgUserCivicrm extends JPlugin {
    * @throws Exception on error.
    */
   function onUserAfterSaveGroup($var) {
-    if (version_compare(JVERSION, '4.0', 'ge')) {
-      $app = \Joomla\CMS\Factory::getApplication();
-    }
-    else {
+    if (version_compare(JVERSION, '4.0', 'lt')) {
       $app = JFactory::getApplication();
     }
     self::civicrmResetNavigation();
@@ -75,10 +69,7 @@ class plgUserCivicrm extends JPlugin {
    * @throws Exception on error.
    */
   function onUserAfterDelete($user, $succes, $msg) {
-    if (version_compare(JVERSION, '4.0', 'ge')) {
-      $app = \Joomla\CMS\Factory::getApplication();
-    }
-    else {
+    if (version_compare(JVERSION, '4.0', 'lt')) {
       $app = JFactory::getApplication();
     }
 
