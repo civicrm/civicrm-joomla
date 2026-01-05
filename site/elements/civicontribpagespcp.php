@@ -68,11 +68,13 @@ class JFormFieldCiviContribPagesPCP extends JFormField {
     ";
 
     $dao = CRM_Core_DAO::executeQuery($query);
+    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
+
     while ($dao->fetch()) {
-      $options[] = JHTML::_('select.option', $dao->id, $dao->title);
+      $options[] = $htmlClass::_('select.option', $dao->id, $dao->title);
     }
 
-    return JHTML::_('select.genericlist', $options, $name,
+    return $htmlClass::_('select.genericlist', $options, $name,
       NULL, 'value', 'text', $value, $name
     );
   }

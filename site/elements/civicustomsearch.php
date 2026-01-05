@@ -59,11 +59,13 @@ class JFormFieldCivicustomsearch extends JFormField {
         AND op_group.name = 'custom_search'
     ";
     $dao = CRM_Core_DAO::executeQuery($query);
+    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
+
     while ($dao->fetch()) {
-      $options[] = JHTML::_('select.option', $dao->value, $dao->description);
+      $options[] = $htmlClass::_('select.option', $dao->value, $dao->description);
     }
 
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $this->value);
+    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $this->value);
   }
 }
 

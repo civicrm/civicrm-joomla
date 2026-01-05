@@ -116,7 +116,10 @@ class plgSystemCivicrmsys extends JPlugin {
       return;
     }
 
-    $app = JFactory::getApplication(); // copied from example -- but why?
+    if (version_compare(JVERSION, '4.0', 'lt')) {
+      // before J4, this would actually try to load the app if not already loaded; it's not needed on J4+
+      $app = JFactory::getApplication();
+    }
 
     define('CIVICRM_SETTINGS_PATH',
       JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');

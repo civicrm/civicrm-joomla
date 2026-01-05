@@ -61,10 +61,12 @@ class JFormFieldCiviEvents extends JFormField {
     );
     $events = civicrm_api3('Event', 'get', $params);
     $options = array();
+    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
+
     foreach ($events['values'] as $event) {
-      $options[] = JHTML::_('select.option', $event['id'], $event['event_title']);
+      $options[] = $htmlClass::_('select.option', $event['id'], $event['event_title']);
     }
 
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
   }
 }

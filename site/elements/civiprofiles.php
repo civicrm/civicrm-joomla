@@ -54,10 +54,13 @@ class JFormFieldCiviProfiles extends JFormField {
     $config = CRM_Core_Config::singleton();
 
     $ufGroups = CRM_Core_PseudoConstant::get('CRM_Core_DAO_UFField', 'uf_group_id');
+    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
+
     foreach ($ufGroups as $key => $values) {
-      $options[] = JHTML::_('select.option', $key, $values);
+      $options[] = $htmlClass::_('select.option', $key, $values);
     }
-    return JHTML::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+
+    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
   }
 }
 
