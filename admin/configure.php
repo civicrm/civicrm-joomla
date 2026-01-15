@@ -61,7 +61,7 @@ function civicrm_main() {
   global $civicrmUpgrade, $adminPath;
 
   // Check for php version and ensure its greater than minPhpVersion
-  $minPhpVersion = '8.0.0';
+  $minPhpVersion = '8.1.2';
   if (version_compare(PHP_VERSION, $minPhpVersion) < 0) {
     echo "CiviCRM requires PHP version $minPhpVersion or greater. You are running PHP version " . PHP_VERSION . "<p>";
     exit();
