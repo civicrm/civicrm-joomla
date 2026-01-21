@@ -51,7 +51,7 @@ class JFormFieldCiviperms extends JFormFieldRules {
   protected function getInput() {
     JHtml::_('bootstrap.tooltip');
     // Add Javascript for permission change
-    JHtml::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
+    JHtml::_('script', 'system/permissions.js', FALSE, TRUE);
     // Load JavaScript message titles
     Text::script('ERROR');
     Text::script('WARNING');
