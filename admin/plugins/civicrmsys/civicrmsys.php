@@ -3,6 +3,26 @@
 // No direct access.
 defined('_JEXEC') or die;
 
+// TODO: remove the below once JPlugin no longer referenced for J4+
+if (version_compare(JVERSION, '4.0', 'ge')) {
+  class _J3_to_J4_plgSystemCivicrmsys extends \Joomla\CMS\Plugin\CMSPlugin {
+    // This is the base class for J4+
+    // TODO: Refactor so that the class implements \Joomla\Event\SubscriberInterface
+    //       and has the getSubscribedEvents() method. All of the event listeners will
+    //       need to be rewritten for J6+ (once all concrete event classes are available)
+    //       as both the method of retrieving parameters and returning values is changing.
+    //       The legacy approach where method name = event name is supported through J5.
+    //       See: https://docs.joomla.org/J4.x:Creating_a_Plugin_for_Joomla
+    //            https://manual.joomla.org/docs/next/building-extensions/plugins/joomla-4-and-5-changes/
+    // TODO: Tidy-up version_compare() based conditional code below as we migrate.
+  }
+}
+else {
+  class _J3_to_J4_plgSystemCivicrmsys extends JPlugin {
+    // This is the base class for J3 and below.
+  }
+}
+
 /**
  * Joomla! master extension plugin.
  *
@@ -10,7 +30,7 @@ defined('_JEXEC') or die;
  * @subpackage  System.Civicrmsys
  * @since    1.6
  */
-class plgSystemCivicrmsys extends JPlugin {
+class plgSystemCivicrmsys extends _J3_to_J4_plgSystemCivicrmsys {
   public $scheduled;
 
   public function onBeforeCompileHead() {
@@ -79,7 +99,7 @@ class plgSystemCivicrmsys extends JPlugin {
   /**
    * After extension source code has been removed
    *
-   * @param JInstaller $installer Installer object
+   * @param Installer $installer Installer object
    * @param int $eid Extension Identifier
    */
   public function onExtensionAfterUninstall($installer, $eid, $result) {
