@@ -28,7 +28,22 @@
 // Active
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
-class JFormFieldCiviContribPages extends JFormField {
+
+// TODO: remove the below once JFormField no longer referenced for J4+
+if (version_compare(JVERSION, '4.0', 'ge')) {
+  class _J3_to_J4_JFormFieldCiviContribPages extends \Joomla\CMS\Form\FormField {
+    // This is the base class for J4+
+    // When we move away from J3 compatibility, there is an opportunity to
+    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
+  }
+}
+else {
+  class _J3_to_J4_JFormFieldCiviContribPages extends JFormField {
+    // This is the base class for J3 and below.
+  }
+}
+
+class JFormFieldCiviContribPages extends _J3_to_J4_JFormFieldCiviContribPages {
 
   /**
    * Element name
