@@ -8,7 +8,25 @@
 defined('_JEXEC') or die;
 
 // TODO: remove the below once JPlugin no longer referenced for J4+
-jimport('joomla.plugin.plugin');
+if (version_compare(JVERSION, '4.0', 'ge')) {
+  class _J3_to_J4_plgUserCivicrm extends \Joomla\CMS\Plugin\CMSPlugin {
+    // This is the base class for J4+
+    // TODO: Refactor so that the class implements \Joomla\Event\SubscriberInterface
+    //       and has the getSubscribedEvents() method. All of the event listeners will
+    //       need to be rewritten for J6+ (once all concrete event classes are available)
+    //       as both the method of retrieving parameters and returning values is changing.
+    //       The legacy approach where method name = event name is supported through J5.
+    //       See: https://docs.joomla.org/J4.x:Creating_a_Plugin_for_Joomla
+    //            https://manual.joomla.org/docs/next/building-extensions/plugins/joomla-4-and-5-changes/
+    // TODO: Tidy-up version_compare() based conditional code below as we migrate.
+  }
+}
+else {
+  jimport('joomla.plugin.plugin');
+  class _J3_to_J4_plgUserCivicrm extends JPlugin {
+    // This is the base class for J3 and below.
+  }
+}
 
 /**
  * CiviCRM User Management Plugin
@@ -17,7 +35,7 @@ jimport('joomla.plugin.plugin');
  * @subpackage JFramework
  * @since 1.6
  */
-class plgUserCivicrm extends JPlugin {
+class plgUserCivicrm extends _J3_to_J4_plgUserCivicrm {
 
   /**
    * resetNavigation after user is saved
