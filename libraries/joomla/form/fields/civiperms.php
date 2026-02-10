@@ -8,8 +8,25 @@ if (version_compare(JVERSION, '4.0.0', 'lt') && file_exists(JPATH_SITE . '/libra
 
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Session\Session;
 
-class JFormFieldCiviperms extends JFormFieldRules {
+// TODO: remove the below once JFormField no longer referenced for J4+
+if (version_compare(JVERSION, '4.0', 'ge')) {
+  class _J3_to_J4_JFormFieldCiviPerms extends \Joomla\CMS\Form\Field\RulesField {
+    // This is the base class for J4+
+    // When we move away from J3 compatibility, there is an opportunity to
+    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
+  }
+}
+else {
+  class _J3_to_J4_JFormFieldCiviPerms extends JFormFieldRules {
+    // This is the base class for J3 and below.
+  }
+}
+
+class JFormFieldCiviperms extends _J3_to_J4_JFormFieldCiviPerms {
 
   /**
    * @var CRM_Core_Config
@@ -49,9 +66,20 @@ class JFormFieldCiviperms extends JFormFieldRules {
    * the issue ID in this comment and reference it in the code as well.
    */
   protected function getInput() {
-    JHtml::_('bootstrap.tooltip');
     // Add Javascript for permission change
-    JHtml::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
+    if (version_compare(JVERSION, '4.0.0', 'lt')) {
+      JHtml::_('bootstrap.tooltip');
+      JHtml::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
+    }
+    else {
+      \Joomla\CMS\Factory::getDocument()->getWebAssetManager()
+      ->useStyle('webcomponent.field-permissions')
+      ->useScript('webcomponent.field-permissions')
+      ->useStyle('webcomponent.joomla-tab')
+      ->useScript('webcomponent.joomla-tab');
+      HtmlHelper::_('bootstrap.tooltip');
+      HTMLHelper::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
+    }
     // Load JavaScript message titles
     Text::script('ERROR');
     Text::script('WARNING');
@@ -79,7 +107,12 @@ class JFormFieldCiviperms extends JFormFieldRules {
     // If the asset id is empty (component or new item).
     if (empty($assetId)) {
       // Get the component asset id as fallback.
-      $db = JFactory::getDbo();
+      if (version_compare(JVERSION, '4.0', 'ge')) {
+        $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+      }
+      else {
+        $db = JFactory::getDbo();
+      }
       $query = $db->getQuery(true)
           ->select($db->quoteName('id'))
           ->from($db->quoteName('#__assets'))
@@ -96,7 +129,12 @@ class JFormFieldCiviperms extends JFormFieldRules {
     // If not in global config we need the parent_id asset to calculate permissions.
     if (!$isGlobalConfig) {
       // In this case we need to get the component rules too.
-      $db = JFactory::getDbo();
+      if (version_compare(JVERSION, '4.0', 'ge')) {
+        $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+      }
+      else {
+        $db = JFactory::getDbo();
+      }
       $query = $db->getQuery(true)
           ->select($db->quoteName('parent_id'))
           ->from($db->quoteName('#__assets'))

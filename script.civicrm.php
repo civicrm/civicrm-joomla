@@ -29,7 +29,12 @@ class Com_CiviCRMInstallerScript {
     global $civicrmUpgrade;
 
     $script          = 'index.php';
-    $liveSite        = substr_replace(JURI::root(), '', -1, 1);
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $liveSite        = substr_replace(\Joomla\CMS\Uri\Uri::root(), '', -1, 1);
+    }
+    else {
+      $liveSite        = substr_replace(JURI::root(), '', -1, 1);
+    }
     $configTaskUrl   = $liveSite . "/administrator/?option=com_civicrm&task=civicrm/admin/configtask&reset=1";
     $upgradeUrl      = $liveSite . "/administrator/?option=com_civicrm&task=civicrm/upgrade&reset=1";
     $registerSiteURL = "https://civicrm.org/register-site";
@@ -100,7 +105,12 @@ class Com_CiviCRMInstallerScript {
 
     $parent    = $parent->getParent();
     $source    = $parent->getPath("source");
-    $installer = new JInstaller();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $installer = new \Joomla\CMS\Installer\Installer();
+    }
+    else {
+      $installer = new JInstaller();
+    }
     $plgArray  = array();
 
     // Joomla 3.0 no longer supports DS
@@ -115,7 +125,12 @@ class Com_CiviCRMInstallerScript {
       $plgArray[] = "'" . $attributes['plugin'] . "'";
     }
 
-    $db              = JFactory::getDbo();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+    }
+    else {
+      $db = JFactory::getDbo();
+    }
 
     // In joomla 3.0, they decided to change the below name to quoteName
     // so we'll do a switch and check which fn name to use
@@ -188,7 +203,12 @@ AND    $columnType = 'plugin'
   function setDefaultPermissions() {
     // get the current perms from the assets table and
     // only set if its empty
-    $db = JFactory::getDbo();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+    }
+    else {
+      $db = JFactory::getDbo();
+    }
     $db->setQuery('SELECT rules FROM #__assets WHERE name = ' . $db->quote('com_civicrm'));
     $assetRules = json_decode((string) $db->loadResult(), TRUE);
 
@@ -286,7 +306,12 @@ AND    $columnType = 'plugin'
   }
 
   function getJoomlaUserGroupID($title) {
-    $db = JFactory::getDbo();
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+    }
+    else {
+      $db = JFactory::getDbo();
+    }
     $db->setQuery('SELECT id FROM #__usergroups where title = ' . $db->quote($title));
     return (int) $db->loadResult();
   }
