@@ -7,10 +7,30 @@
 
 defined('_JEXEC') or die;
 
+// TODO: remove the below once JPlugin no longer referenced for J4+
+if (version_compare(JVERSION, '4.0', 'ge')) {
+  class _J3_to_J4_plgQuickiconCivicrmicon extends \Joomla\CMS\Plugin\CMSPlugin {
+    // This is the base class for J4+
+    // TODO: Refactor so that the class implements \Joomla\Event\SubscriberInterface
+    //       and has the getSubscribedEvents() method. All of the event listeners will
+    //       need to be rewritten for J6+ (once all concrete event classes are available)
+    //       as both the method of retrieving parameters and returning values is changing.
+    //       The legacy approach where method name = event name is supported through J5.
+    //       See: https://docs.joomla.org/J4.x:Creating_a_Plugin_for_Joomla
+    //            https://manual.joomla.org/docs/next/building-extensions/plugins/joomla-4-and-5-changes/
+    // TODO: Tidy-up version_compare() based conditional code below as we migrate.
+  }
+}
+else {
+  class _J3_to_J4_plgQuickiconCivicrmicon extends JPlugin {
+    // This is the base class for J3 and below.
+  }
+}
+
 /**
  * CiviCRM QuickIcon plugin
  */
-class plgQuickiconCivicrmicon extends JPlugin {
+class plgQuickiconCivicrmicon extends _J3_to_J4_plgQuickiconCivicrmicon {
 
   /**
    * This method is called when the Quick Icons module is constructing its set
