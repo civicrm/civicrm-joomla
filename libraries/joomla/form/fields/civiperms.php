@@ -12,7 +12,21 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Session\Session;
 
-class JFormFieldCiviperms extends JFormFieldRules {
+// TODO: remove the below once JFormField no longer referenced for J4+
+if (version_compare(JVERSION, '4.0', 'ge')) {
+  class _J3_to_J4_JFormFieldCiviPerms extends \Joomla\CMS\Form\Field\RulesField {
+    // This is the base class for J4+
+    // When we move away from J3 compatibility, there is an opportunity to
+    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
+  }
+}
+else {
+  class _J3_to_J4_JFormFieldCiviPerms extends JFormFieldRules {
+    // This is the base class for J3 and below.
+  }
+}
+
+class JFormFieldCiviperms extends _J3_to_J4_JFormFieldCiviPerms {
 
   /**
    * @var CRM_Core_Config
@@ -52,10 +66,10 @@ class JFormFieldCiviperms extends JFormFieldRules {
    * the issue ID in this comment and reference it in the code as well.
    */
   protected function getInput() {
-    HTMLHelper::_('bootstrap.tooltip');
     // Add Javascript for permission change
     if (version_compare(JVERSION, '4.0.0', 'lt')) {
-      HTMLHelper::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
+      JHtml::_('bootstrap.tooltip');
+      JHtml::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
     }
     else {
       \Joomla\CMS\Factory::getDocument()->getWebAssetManager()
@@ -63,6 +77,8 @@ class JFormFieldCiviperms extends JFormFieldRules {
       ->useScript('webcomponent.field-permissions')
       ->useStyle('webcomponent.joomla-tab')
       ->useScript('webcomponent.joomla-tab');
+      HtmlHelper::_('bootstrap.tooltip');
+      HTMLHelper::_('script', 'system/permissions.js', array('version' => 'auto', 'relative' => true));
     }
     // Load JavaScript message titles
     Text::script('ERROR');
@@ -152,7 +168,7 @@ class JFormFieldCiviperms extends JFormFieldRules {
     }
 
     // Ajax request data.
-    $ajaxUri = Route::_('index.php?option=com_config&task=config.store&format=json&' . Session::getFormToken() . '=1');
+    $ajaxUri = JRoute::_('index.php?option=com_config&task=config.store&format=json&' . JSession::getFormToken() . '=1');
 
     // Prepare output
     $html = array();

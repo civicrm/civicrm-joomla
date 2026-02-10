@@ -105,11 +105,20 @@ CRM_Core_ClassLoader::singleton()->register();
 ";
 
   $string = trim($string);
-  \Joomla\CMS\Filesystem\File::write($adminPath . DIRECTORY_SEPARATOR .
-    'civicrm' . DIRECTORY_SEPARATOR .
-    'civicrm.config.php',
-    $string
-  );
+  if (version_compare(JVERSION, '4.0', 'ge')) {
+    \Joomla\CMS\Filesystem\File::write($adminPath . DIRECTORY_SEPARATOR .
+      'civicrm' . DIRECTORY_SEPARATOR .
+      'civicrm.config.php',
+      $string
+    );
+  }
+  else {
+    JFile::write($adminPath . DIRECTORY_SEPARATOR .
+      'civicrm' . DIRECTORY_SEPARATOR .
+      'civicrm.config.php',
+      $string
+    );
+  }
   return $string;
 }
 
@@ -134,7 +143,12 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
   $model = $setup->getModel();
 
   $jConfig = new JConfig();
-  $model->cmsBaseUrl = substr_replace(\Joomla\CMS\Uri\Uri::root(), '', -1, 1);
+  if (version_compare(JVERSION, '4.0', 'ge')) {
+    $model->cmsBaseUrl = substr_replace(\Joomla\CMS\Uri\Uri::root(), '', -1, 1);
+  }
+  else {
+    $model->cmsBaseUrl = substr_replace(JURI::root(), '', -1, 1);
+  }
   $model->cmsDb = [
     'username' => $jConfig->user,
     'password' => $jConfig->password,

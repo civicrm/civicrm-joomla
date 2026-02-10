@@ -70,7 +70,7 @@ function civicrm_initialize() {
   CRM_Core_Config::singleton()->userSystem->setMySQLTimeZone();
 }
 
-function plugin_init(String $joomlaVersion) {
+function plugin_init(string $joomlaVersion) {
   if ($joomlaVersion !== 'Unknown' && version_compare($joomlaVersion, '4.0', 'ge')) {
     \Joomla\CMS\Plugin\PluginHelper::importPlugin('civicrm');
     $app = \Joomla\CMS\Factory::getApplication();
@@ -94,7 +94,7 @@ function plugin_init(String $joomlaVersion) {
 function civicrm_invoke() {
   civicrm_initialize();
   $joomlaVersion = CRM_Core_Config::singleton()->userSystem->getVersion();
-  plugin_init($joomlVersion);
+  plugin_init($joomlaVersion);
   if ($joomlaVersion !== 'Unknown' && version_compare($joomlaVersion, '4.0', 'ge')) {
     $user = \Joomla\CMS\Factory::getApplication()->getIdentity() ?? \Joomla\CMS\Factory::getContainer()->get(\Joomla\CMS\User\UserFactoryInterface::class)->loadUserById(0);
   }
