@@ -55,6 +55,14 @@ function civicrm_extract_code(string $adminPath) {
     $archive = new Joomla\Archive\Archive();
     $archive->extract($archivename, $extractdir);
   }
+
+  $deletedFilesList = json_decode(file_get_contents($adminPath . DIRECTORY_SEPARATOR . 'civicrm' . DIRECTORY_SEPARATOR . 'deleted-files-list.json'));
+  foreach ($deletedFilesList as $deletedFile) {
+    $filePath = $adminPath . DIRECTORY_SEPARATOR . 'civicrm' . DIRECTORY_SEPARATOR . $deletedFile;
+    if (file_exists($filePath)) {
+      unlink($filePath);
+    }
+  }
 }
 
 function civicrm_main() {
