@@ -159,8 +159,8 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
   $model->templateCompilePath = implode(DIRECTORY_SEPARATOR, [JPATH_SITE, 'media', 'civicrm', 'templates_c']);
   $model->lang = 'en_US'; /* Joomla installer historically only did `civicrm_data.mysql`. Should fix this... */
 
-  if ($civicrmUpgrade) {
-    require_once $setup->getModel()->settingsPath;
+  if (is_readable($model->settingsPath)) {
+    require_once $model->settingsPath;
     if (defined('CIVICRM_DSN')) {
       $civiDSNParts = DB::parseDSN(CIVICRM_DSN);
       $model->db['username'] = $civiDSNParts['username'];
@@ -172,13 +172,13 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
       $model->db['database'] = $civiDSNParts['database'];
     }
     if (defined('CIVICRM_SITE_KEY')) {
-      $setup->getModel()->siteKey = CIVICRM_SITE_KEY;
+      $model->siteKey = CIVICRM_SITE_KEY;
     }
     if (defined('CIVICRM_CRED_KEYS')) {
-      $setup->getModel()->credKeys = explode(' ', CIVICRM_CRED_KEYS);
+      $model->credKeys = explode(' ', CIVICRM_CRED_KEYS);
     }
     if (defined('CIVICRM_SIGN_KEYS')) {
-      $setup->getModel()->signKeys = explode(' ', CIVICRM_SIGN_KEYS);
+      $model->signKeys = explode(' ', CIVICRM_SIGN_KEYS);
     }
   }
 
@@ -198,7 +198,7 @@ function civicrm_detect_upgrade(): bool {
   if (is_readable($configFile)) {
     require_once $configFile;
 
-    if (defined("CIVICRM_DSN")) {
+    if (defined('CIVICRM_DSN')) {
       if (!class_exists('DB')) {
         require_once 'DB.php';
       }
@@ -207,18 +207,30 @@ function civicrm_detect_upgrade(): bool {
     }
   }
 
-  if (version_compare(JVERSION, '4.0', 'ge')) {
-    $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
-  }
-  else {
-    $db = JFactory::getDbo();
-  }
-  $db->setQuery(' SELECT count( * )
+  $sqlCountDomainTables = ' SELECT count( * )
 FROM information_schema.tables
 WHERE table_name LIKE "civicrm_domain"
-AND table_schema = "' . $database . '" ');
+AND table_schema = "' . $database . '" ';
+  $countDomainTables = 0;
 
-  $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
+  // if the CiviCRM and CMS database credentials are different, connect to the server using the
+  // right ones, to ensure we have access to the $database and can see it in information_schema
+  if ($database != $jConfig->db) {
+    CRM_Core_DAO::init(CIVICRM_DSN);
+    $countDomainTables = CRM_Core_DAO::singleValueQuery($sqlCountDomainTables);
+  }
+  else {
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+    }
+    else {
+      $db = JFactory::getDbo();
+    }
+    $db->setQuery($sqlCountDomainTables);
+    $countDomainTables = $db->loadResult();
+  }
+
+  $civicrmUpgrade = ($countDomainTables == 0) ? FALSE : TRUE;
   return $civicrmUpgrade;
 }
 
