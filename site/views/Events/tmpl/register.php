@@ -57,13 +57,13 @@ defined('_JEXEC') or die('Restricted access'); ?>
       		<tr><td colspan="2" class="report">
 		<span class="summary"><?php echo $this->$event.description ?></span></td></tr>
 	<?php endif; ?>
-	<tr><td><label>JText::_('When')</label></td>
+	<tr><td><label>Text::_('When')</label></td>
             <td width="90%">
 	    <abbr class="dtstart" title="{$event.event_start_date}">
 	    	<?php echo $this->$event.event_start_date|crmDate ?></abbr>
 	
 	<?php if $event.event_end_date ?>
-		&nbsp; JText::_('through') &nbsp;
+		&nbsp; Text::_('through') &nbsp;
                 /* Only show end time if end date = start date*/
                 <?php if $event.event_end_date|date_format:"%Y%m%d" == $event.event_start_date|date_format:"%Y%m%d" ?>
 			<abbr class="dtend" title="<?php echo $this->$event.event_end_date ?>">
@@ -80,7 +80,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 	
 	<?php if $isShowLocation ?>
         	<?php if $location.1.name || $location.1.address ?>
-        	    <tr><td><label>JText::_('Location')</label></td>
+        	    <tr><td><label>Text::_('Location')</label></td>
               	        <td><?php if $location.1.name ?>
 				<span class="fn org"><?php echo $this->$location.1.name ?></span><br />
 			<?php endif; ?>
@@ -89,7 +89,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
                                    $config->mapAPIKey && 
                                    ( ( !empty($location.1.address.geo_code_1) AND is_numeric($location.1.address.geo_code_1) ) || 
                                      ( $config->mapGeoCoding && !empty($location.1.address.city) AND !empty($location.1.address.state_province) ) ) )  ?>
-                 		<br/><a href="<?php echo $mapURL ?>" title="JText::_('Map this Address')">JText::_('Map this Location')</a>
+                 		<br/><a href="<?php echo $mapURL ?>" title="Text::_('Map this Address')">Text::_('Map this Location')</a>
               	  		<?php endif; ?>
                  	</td>
           	    </tr>
@@ -97,7 +97,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
       	<?php endif; ?>/*End of isShowLocation condition*/  
 
 	<?php if $location.1.phone.1.phone || $location.1.email.1.email ?>
-            <tr><td><label>JText::_('Contact')</label></td>
+            <tr><td><label>Text::_('Contact')</label></td>
             	<td>	/* loop on any phones and emails for this event */
                		<?php foreach from=$location.1.phone item=phone ?>
                 		<?php if $phone.phone ?>
@@ -109,7 +109,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 
 			<?php foreach from=$location.1.email item=email ?>
         			<?php if $email.email ?>
-                    			JText::_('Email:') <span class="email"><a href="mailto:{$email.email}">{$email.email}</a></span>
+                    			Text::_('Email:') <span class="email"><a href="mailto:{$email.email}">{$email.email}</a></span>
                   		<?php endif; ?>
                 	<?php endforeach; ?>
             	</td>
@@ -148,7 +148,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
          {capture assign=icalFile}{crmURL p='civicrm/event/ical' q="reset=1&id=`$event.id`"}{/capture}
          {capture assign=icalFeed}{crmURL p='civicrm/event/ical' q="reset=1&page=1&id=`$event.id`"}{/capture}
 
-         <a href="{$icalFile}">&raquo; JText::_('Download iCalendar File')</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{$icalFeed}" title="JText::_('iCalendar Feed')"><img src="{$config->resourceBase}i/ical_feed.gif" alt="JText::_('iCalendar Feed')" /></a> 
+         <a href="{$icalFile}">&raquo; Text::_('Download iCalendar File')</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{$icalFeed}" title="Text::_('iCalendar Feed')"><img src="{$config->resourceBase}i/ical_feed.gif" alt="Text::_('iCalendar Feed')" /></a> 
       </div>
     <?php endif; ?>
 </div>

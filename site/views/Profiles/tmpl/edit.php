@@ -45,12 +45,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 </tr>
 </table>
 <?php endif; ?>
-  // Make sure you are logged in and have the necessary access rights
-    if ($user->get('gid') < 19) {
-        JResponse::setHeader('HTTP/1.0 403',true);
-              JError::raiseWarning( 403, JText::_('ALERTNOTAUTH') );
-      return;
-    }
+
 /*  edit (mode=8) pages */
 <script type="text/javascript" src="{$config->resourceBase}js/Common.js"></script>
 {if ! empty( $fields )}
