@@ -44,10 +44,7 @@ class plgSystemCivicrmsys extends _J3_to_J4_plgSystemCivicrmsys {
   }
 
   /**
-   * After extension source code has been installed
-   *
-   * @param JInstaller $installer Installer object
-   * @param int $eid Extension Identifier
+   * Before extension source code has been installed
    */
   public function onExtensionBeforeInstall() {
     // called by "Upload Package" use-case
@@ -57,30 +54,32 @@ class plgSystemCivicrmsys extends _J3_to_J4_plgSystemCivicrmsys {
   /**
    * After extension source code has been installed
    *
-   * @param JInstaller $installer Installer object
+   * @param Installer $installer Installer object
    * @param int $eid Extension Identifier
    */
   public function onExtensionAfterInstall($installer, $eid) {
-    if ($installer->extension instanceof JTableExtension && $installer->extension->folder == 'civicrm') {
-      //x $args = func_get_args(); dump($args, 'onExtensionAfterInstall');
+    if (isset($installer->extension->folder) && ($installer->extension->folder == 'civicrm')) {
       $this->scheduleCivicrmRebuild();
     }
   }
 
   /**
-   * After extension source code has been updated(?)
+   * After extension source code has been updated
    *
-   * @param JInstaller $installer Installer object
+   * @param Installer $installer Installer object
    * @param int $eid Extension Identifier
    */
   public function onExtensionAfterUpdate($installer, $eid) {
-    // TODO test //if ($installer->extension instanceof JTableExtension && $installer->extension->folder == 'civicrm') {
+    // TODO test //if (isset($installer->extension->folder) && ($installer->extension->folder == 'civicrm')) {
     $this->scheduleCivicrmRebuild();
     //}
   }
 
   /**
    * After extension configuration has been saved
+   *
+   * @param string $type Context of save operation
+   * @param Extension $ext Extension table object
    */
   public function onExtensionAfterSave($type, $ext) {
     // Called by "Manage Plugins" use-case -- per-plugin forms
@@ -89,6 +88,12 @@ class plgSystemCivicrmsys extends _J3_to_J4_plgSystemCivicrmsys {
     }
   }
 
+  /**
+   * After Joomla! cache is cleaned
+   *
+   * @param string $defaultgroup The group targeted by the call
+   * @param string $cachebase The root directory path where the cache files are stored
+   */
   public function onContentCleanCache($defaultgroup, $cachebase) {
     // Called by "Manage Plugins" use-case -- both bulk operations and per-plugin forms
     if ($defaultgroup == 'com_plugins') {
@@ -101,6 +106,7 @@ class plgSystemCivicrmsys extends _J3_to_J4_plgSystemCivicrmsys {
    *
    * @param Installer $installer Installer object
    * @param int $eid Extension Identifier
+   * @param bool $result Whether the removal was successful
    */
   public function onExtensionAfterUninstall($installer, $eid, $result) {
     $this->scheduleCivicrmRebuild();
@@ -114,7 +120,6 @@ class plgSystemCivicrmsys extends _J3_to_J4_plgSystemCivicrmsys {
       return;
     }
     register_shutdown_function(array($this, 'doCivicrmRebuild'));
-    // dump(TRUE, 'scheduled');
     $this->scheduled = TRUE;
   }
 
@@ -122,7 +127,6 @@ class plgSystemCivicrmsys extends _J3_to_J4_plgSystemCivicrmsys {
    * Perform the actual rebuild
    */
   public function doCivicrmRebuild() {
-    // dump($this, 'doCivicrmRebuild');
     $this->bootstrap();
     CRM_Core_Invoke::rebuildMenuAndCaches(TRUE);
   }
