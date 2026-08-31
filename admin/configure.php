@@ -70,9 +70,9 @@ function civicrm_main() {
   $adminPath = JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_civicrm';
   civicrm_extract_code($adminPath);
 
-  $civicrmUpgrade = civicrm_detect_upgrade();
+  $setup = civicrm_setup_instance($adminPath);
 
-  $setup = civicrm_setup_instance($adminPath, $civicrmUpgrade);
+  $civicrmUpgrade = civicrm_detect_upgrade($setup);
 
   civicrm_backend_config($setup->getModel()->settingsPath, $adminPath);
   $setup->installFiles();
@@ -127,7 +127,7 @@ CRM_Core_ClassLoader::singleton()->register();
  * @return \Civi\Setup
  * @throws \Exception
  */
-function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\Setup {
+function civicrm_setup_instance(string $adminPath): \Civi\Setup {
   $civicrmCore = $adminPath . DIRECTORY_SEPARATOR . 'civicrm';
 
   require_once implode(DIRECTORY_SEPARATOR, [$civicrmCore, 'CRM', 'Core', 'ClassLoader.php']);
@@ -159,8 +159,8 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
   $model->templateCompilePath = implode(DIRECTORY_SEPARATOR, [JPATH_SITE, 'media', 'civicrm', 'templates_c']);
   $model->lang = 'en_US'; /* Joomla installer historically only did `civicrm_data.mysql`. Should fix this... */
 
-  if ($civicrmUpgrade) {
-    require_once $setup->getModel()->settingsPath;
+  if (is_readable($model->settingsPath)) {
+    require_once $model->settingsPath;
     if (defined('CIVICRM_DSN')) {
       $civiDSNParts = DB::parseDSN(CIVICRM_DSN);
       $model->db['username'] = $civiDSNParts['username'];
@@ -172,13 +172,13 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
       $model->db['database'] = $civiDSNParts['database'];
     }
     if (defined('CIVICRM_SITE_KEY')) {
-      $setup->getModel()->siteKey = CIVICRM_SITE_KEY;
+      $model->siteKey = CIVICRM_SITE_KEY;
     }
     if (defined('CIVICRM_CRED_KEYS')) {
-      $setup->getModel()->credKeys = explode(' ', CIVICRM_CRED_KEYS);
+      $model->credKeys = explode(' ', CIVICRM_CRED_KEYS);
     }
     if (defined('CIVICRM_SIGN_KEYS')) {
-      $setup->getModel()->signKeys = explode(' ', CIVICRM_SIGN_KEYS);
+      $model->signKeys = explode(' ', CIVICRM_SIGN_KEYS);
     }
   }
 
@@ -186,39 +186,34 @@ function civicrm_setup_instance(string $adminPath, bool $civicrmUpgrade): \Civi\
 }
 
 /**
+ * @param \Civi\Setup $setup The instance to check for upgrade.
  * @return bool
  *   TRUE if this installation operation is actually an upgrade.
  */
-function civicrm_detect_upgrade(): bool {
-  global $adminPath;
-  $configFile = $adminPath . DIRECTORY_SEPARATOR . 'civicrm.settings.php';
-  $jConfig = new JConfig();
-  $database = $jConfig->db;
-
-  if (is_readable($configFile)) {
-    require_once $configFile;
-
-    if (defined("CIVICRM_DSN")) {
-      if (!class_exists('DB')) {
-        require_once 'DB.php';
-      }
-      $civiDSNParts = DB::parseDSN(CIVICRM_DSN);
-      $database = $civiDSNParts['database'];
-    }
-  }
-
-  if (version_compare(JVERSION, '4.0', 'ge')) {
-    $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
-  }
-  else {
-    $db = JFactory::getDbo();
-  }
-  $db->setQuery(' SELECT count( * )
+function civicrm_detect_upgrade($setup): bool {
+  $dbQuery = ' SELECT count( * )
 FROM information_schema.tables
 WHERE table_name LIKE "civicrm_domain"
-AND table_schema = "' . $database . '" ');
+AND table_schema = "' . $setup->getModel()->db['database'] . '" ';
+  $dbResult = 0;
 
-  $civicrmUpgrade = ($db->loadResult() == 0) ? FALSE : TRUE;
+  // use CiviCRM database client and credentials if possible, as we are querying the CiviCRM database (via information_schema)
+  if (defined('CIVICRM_DSN')) {
+    CRM_Core_DAO::init(CIVICRM_DSN);
+    $dbResult = CRM_Core_DAO::singleValueQuery($dbQuery);
+  }
+  else {
+    if (version_compare(JVERSION, '4.0', 'ge')) {
+      $db = \Joomla\CMS\Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+    }
+    else {
+      $db = JFactory::getDbo();
+    }
+    $db->setQuery($dbQuery);
+    $dbResult = $db->loadResult();
+  }
+
+  $civicrmUpgrade = ($dbResult == 0) ? FALSE : TRUE;
   return $civicrmUpgrade;
 }
 
