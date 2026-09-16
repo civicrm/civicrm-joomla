@@ -106,7 +106,7 @@ CRM_Core_ClassLoader::singleton()->register();
 
   $string = trim($string);
   if (version_compare(JVERSION, '4.0', 'ge')) {
-    \Joomla\CMS\Filesystem\File::write($adminPath . DIRECTORY_SEPARATOR .
+    \Joomla\Filesystem\File::write($adminPath . DIRECTORY_SEPARATOR .
       'civicrm' . DIRECTORY_SEPARATOR .
       'civicrm.config.php',
       $string
