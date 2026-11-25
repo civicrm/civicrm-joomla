@@ -29,34 +29,25 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// TODO: remove the below once JFormField no longer referenced for J4+
-if (version_compare(JVERSION, '4.0', 'ge')) {
-  class _J3_to_J4_JFormFieldCiviProfiles extends \Joomla\CMS\Form\FormField {
-    // This is the base class for J4+
-    // When we move away from J3 compatibility, there is an opportunity to
-    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
-  }
-}
-else {
-  class _J3_to_J4_JFormFieldCiviProfiles extends JFormField {
-    // This is the base class for J3 and below.
-  }
-}
-
-class JFormFieldCiviProfiles extends _J3_to_J4_JFormFieldCiviProfiles {
+/*
+ * Custom list field for Profiles.
+ */
+class JFormFieldCiviProfiles extends \Joomla\CMS\Form\Field\ListField {
 
   /**
-   * Element name
+   * Element type
    *
-   * @access	protected
-   * @var		string
+   * @access    protected
+   * @var       string
    */
-  var $type = 'CiviProfiles';
+  protected $type = 'CiviProfiles';
 
-  protected function getInput() {
-    $value = $this->value;
-    $name = $this->name;
-
+  /**
+   * Get list options.
+   *
+   * @return array
+   */
+  public function getOptions(): array {
     // Initiate CiviCRM
     define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
     require_once CIVICRM_SETTINGS_PATH;
@@ -67,15 +58,14 @@ class JFormFieldCiviProfiles extends _J3_to_J4_JFormFieldCiviProfiles {
     require_once 'CRM/Core/Config.php';
     $config = CRM_Core_Config::singleton();
 
+    $options = [];
     $ufGroups = CRM_Core_PseudoConstant::get('CRM_Core_DAO_UFField', 'uf_group_id');
-    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
 
     foreach ($ufGroups as $key => $values) {
-      $options[] = $htmlClass::_('select.option', $key, $values);
+      $options[$key] = $values;
     }
 
-    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return $options;
   }
 }
-
 

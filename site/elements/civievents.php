@@ -29,34 +29,25 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// TODO: remove the below once JFormField no longer referenced for J4+
-if (version_compare(JVERSION, '4.0', 'ge')) {
-  class _J3_to_J4_JFormFieldCiviEvents extends \Joomla\CMS\Form\FormField {
-    // This is the base class for J4+
-    // When we move away from J3 compatibility, there is an opportunity to
-    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
-  }
-}
-else {
-  class _J3_to_J4_JFormFieldCiviEvents extends JFormField {
-    // This is the base class for J3 and below.
-  }
-}
-
-class JFormFieldCiviEvents extends _J3_to_J4_JFormFieldCiviEvents {
+/*
+ * Custom list field for Events.
+ */
+class JFormFieldCiviEvents extends \Joomla\CMS\Form\Field\ListField {
 
   /**
-   * Element name
+   * Element type
    *
    * @access  protected
    * @var     string
    */
-  var $type = 'CiviEvents';
+  protected $type = 'CiviEvents';
 
-  protected function getInput() {
-
-    $value = $this->value;
-    $name = $this->name;
+  /**
+   * Get list options.
+   *
+   * @return array
+   */
+  public function getOptions(): array {
     // Initiate CiviCRM
     define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
     require_once CIVICRM_SETTINGS_PATH;
@@ -67,21 +58,20 @@ class JFormFieldCiviEvents extends _J3_to_J4_JFormFieldCiviEvents {
     require_once 'CRM/Core/Config.php';
     $config = CRM_Core_Config::singleton();
 
-    $params = array(
+    $params = [
       'is_active' => 1,
-      'return' => array("title"),
-      'start_date' => array('>=' => "today"),
-      'end_date' => array('>=' => "today"),
-      'options' => array('sort' => "start_date", 'limit' => 0, 'or' => array(array("start_date", "end_date"))),
-    );
+      'return' => ["title"],
+      'start_date' => ['>=' => "today"],
+      'end_date' => ['>=' => "today"],
+      'options' => ['sort' => "start_date", 'limit' => 0, 'or' => [["start_date", "end_date"]]],
+    ];
     $events = civicrm_api3('Event', 'get', $params);
-    $options = array();
-    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
+    $options = [];
 
     foreach ($events['values'] as $event) {
-      $options[] = $htmlClass::_('select.option', $event['id'], $event['event_title']);
+      $options[$event['id']] = $event['event_title'];
     }
 
-    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return $options;
   }
 }
