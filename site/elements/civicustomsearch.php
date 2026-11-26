@@ -29,34 +29,25 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// TODO: remove the below once JFormField no longer referenced for J4+
-if (version_compare(JVERSION, '4.0', 'ge')) {
-  class _J3_to_J4_JFormFieldCivicustomsearch extends \Joomla\CMS\Form\FormField {
-    // This is the base class for J4+
-    // When we move away from J3 compatibility, there is an opportunity to
-    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
-  }
-}
-else {
-  class _J3_to_J4_JFormFieldCivicustomsearch extends JFormField {
-    // This is the base class for J3 and below.
-  }
-}
-
-class JFormFieldCivicustomsearch extends _J3_to_J4_JFormFieldCivicustomsearch {
+/*
+ * Custom list field for Custom Search.
+ */
+class JFormFieldCivicustomsearch extends \Joomla\CMS\Form\Field\ListField {
 
   /**
-   * Element name
+   * Element type
    *
-   * @access	protected
-   * @var		string
+   * @access    protected
+   * @var       string
    */
-  var $type = 'Civicustomsearch';
+  protected $type = 'Civicustomsearch';
 
-  protected function getInput() {
-    $value = $this->value;
-    $name = $this->name;
-
+  /**
+   * Get list options.
+   *
+   * @return array
+   */
+  public function getOptions(): array {
     // Initiate CiviCRM
     define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
     require_once CIVICRM_SETTINGS_PATH;
@@ -66,6 +57,8 @@ class JFormFieldCivicustomsearch extends _J3_to_J4_JFormFieldCivicustomsearch {
 
     require_once 'CRM/Core/Config.php';
     $config = CRM_Core_Config::singleton();
+
+    $options = [];
     $query = "
       SELECT op_val.value, op_val.description
       FROM civicrm_option_value op_val
@@ -74,13 +67,12 @@ class JFormFieldCivicustomsearch extends _J3_to_J4_JFormFieldCivicustomsearch {
         AND op_group.name = 'custom_search'
     ";
     $dao = CRM_Core_DAO::executeQuery($query);
-    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
 
     while ($dao->fetch()) {
-      $options[] = $htmlClass::_('select.option', $dao->value, $dao->description);
+      $options[$dao->value] = $dao->description;
     }
 
-    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $this->value);
+    return $options;
   }
 }
 

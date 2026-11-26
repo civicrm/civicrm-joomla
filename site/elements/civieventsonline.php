@@ -1,38 +1,53 @@
 <?php
+/*
+   +--------------------------------------------------------------------+
+   | CiviCRM version 5                                                  |
+   +--------------------------------------------------------------------+
+   | This file is a part of CiviCRM.                                    |
+   |                                                                    |
+   | CiviCRM is free software; you can copy, modify, and distribute it  |
+   | under the terms of the GNU Affero General Public License           |
+   | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
+   |                                                                    |
+   | CiviCRM is distributed in the hope that it will be useful, but     |
+   | WITHOUT ANY WARRANTY; without even the implied warranty of         |
+   | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.               |
+   | See the GNU Affero General Public License for more details.        |
+   |                                                                    |
+   | You should have received a copy of the GNU Affero General Public   |
+   | License and the CiviCRM Licensing Exception along                  |
+   | with this program; if not, contact CiviCRM LLC                     |
+   | at info[AT]civicrm[DOT]org. If you have questions about the        |
+   | GNU Affero General Public License or the licensing of CiviCRM,     |
+   | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
+   +--------------------------------------------------------------------+
+  */
+
 // Retrieve list of CiviCRM events
 // Active, current or future, online
 
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// TODO: remove the below once JFormField no longer referenced for J4+
-if (version_compare(JVERSION, '4.0', 'ge')) {
-  class _J3_to_J4_JFormFieldCiviEventsOnline extends \Joomla\CMS\Form\FormField {
-    // This is the base class for J4+
-    // When we move away from J3 compatibility, there is an opportunity to
-    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
-  }
-}
-else {
-  class _J3_to_J4_JFormFieldCiviEventsOnline extends JFormField {
-    // This is the base class for J3 and below.
-  }
-}
-
-class JFormFieldCiviEventsOnline extends _J3_to_J4_JFormFieldCiviEventsOnline {
+/*
+ * Custom list field for Events with Online Registration.
+ */
+class JFormFieldCiviEventsOnline extends \Joomla\CMS\Form\Field\ListField {
 
   /**
-   * Element name
+   * Element type
    *
-   * @access	protected
-   * @var		string
+   * @access    protected
+   * @var       string
    */
-  var $type = 'CiviEventsOnline';
+  protected $type = 'CiviEventsOnline';
 
-  protected function getInput() {
-    $value = $this->value;
-    $name = $this->name;
-
+  /**
+   * Get list options.
+   *
+   * @return array
+   */
+  public function getOptions(): array {
     // Initiate CiviCRM
     define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
     require_once CIVICRM_SETTINGS_PATH;
@@ -43,24 +58,21 @@ class JFormFieldCiviEventsOnline extends _J3_to_J4_JFormFieldCiviEventsOnline {
     require_once 'CRM/Core/Config.php';
     $config = CRM_Core_Config::singleton();
 
-    $params = array(
+    $params = [
       'is_active' => 1,
       'is_online_registration' => 1,
-      'return' => array("title"),
-      'start_date' => array('>=' => "today"),
-      'end_date' => array('>=' => "today"),
-      'options' => array('sort' => "start_date", 'limit' => 0, 'or' => array(array("start_date", "end_date"))),
-    );
+      'return' => ["title"],
+      'start_date' => ['>=' => "today"],
+      'end_date' => ['>=' => "today"],
+      'options' => ['sort' => "start_date", 'limit' => 0, 'or' => [["start_date", "end_date"]]],
+    ];
     $events = civicrm_api3('Event', 'get', $params);
-    $options = array();
-    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
+    $options = [];
 
     foreach ($events['values'] as $event) {
-      $options[] = $htmlClass::_('select.option', $event['id'], $event['event_title']);
+      $options[$event['id']] = $event['event_title'];
     }
 
-    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return $options;
   }
 }
-
-

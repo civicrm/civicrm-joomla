@@ -28,34 +28,25 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// TODO: remove the below once JFormField no longer referenced for J4+
-if (version_compare(JVERSION, '4.0', 'ge')) {
-  class _J3_to_J4_JFormFieldCiviEventTypes extends \Joomla\CMS\Form\FormField {
-    // This is the base class for J4+
-    // When we move away from J3 compatibility, there is an opportunity to
-    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
-  }
-}
-else {
-  class _J3_to_J4_JFormFieldCiviEventTypes extends JFormField {
-    // This is the base class for J3 and below.
-  }
-}
-
-class JFormFieldCiviEventTypes extends _J3_to_J4_JFormFieldCiviEventTypes {
+/*
+ * Custom list field for Event Types.
+ */
+class JFormFieldCiviEventTypes extends \Joomla\CMS\Form\Field\ListField {
 
   /**
-   * Element name
+   * Element type
    *
    * @access  protected
    * @var     string
    */
-  var $type = 'CiviEventTypes';
+  protected $type = 'CiviEventTypes';
 
-  protected function getInput() {
-
-    $value = $this->value;
-    $name = $this->name;
+  /**
+   * Get list options.
+   *
+   * @return array
+   */
+  public function getOptions(): array {
     // Initiate CiviCRM
     define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
     require_once CIVICRM_SETTINGS_PATH;
@@ -70,14 +61,13 @@ class JFormFieldCiviEventTypes extends _J3_to_J4_JFormFieldCiviEventTypes {
       ->addSelect('value', 'label')
       ->addJoin('OptionGroup AS option_group', 'INNER', ['option_group_id:name', '=', '"event_type"'])
       ->execute();
-    $options = array();
-    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
-    $options[] = $htmlClass::_('select.option', NULL, '');
+    // allow nothing to be selected (no filtering on event type)
+    $options = ['' => ''];
 
     foreach ($eventTypes as $eventType) {
-      $options[] = $htmlClass::_('select.option', $eventType['value'], $eventType['label']);
+      $options[$eventType['value']] = $eventType['label'];
     }
 
-    return $htmlClass::_('select.genericlist', $options, $name, NULL, 'value', 'text', $value);
+    return $options;
   }
 }

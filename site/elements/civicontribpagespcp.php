@@ -30,35 +30,25 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// TODO: remove the below once JFormField no longer referenced for J4+
-if (version_compare(JVERSION, '4.0', 'ge')) {
-  class _J3_to_J4_JFormFieldCiviContribPagesPCP extends \Joomla\CMS\Form\FormField {
-    // This is the base class for J4+
-    // When we move away from J3 compatibility, there is an opportunity to
-    // specialise to one of the pre-packaged classes in libraries/src/Form/Field
-  }
-}
-else {
-  class _J3_to_J4_JFormFieldCiviContribPagesPCP extends JFormField {
-    // This is the base class for J3 and below.
-  }
-}
-
-class JFormFieldCiviContribPagesPCP extends _J3_to_J4_JFormFieldCiviContribPagesPCP {
+/*
+ * Custom list field for PCP Contribution Pages.
+ */
+class JFormFieldCiviContribPagesPCP extends \Joomla\CMS\Form\Field\ListField {
 
   /**
-   * Element name
+   * Element type
    *
    * @access  protected
    * @var    string
    */
-  var $type = 'CiviContribPagesPCP';
+  protected $type = 'CiviContribPagesPCP';
 
-  protected function getInput() {
-
-    $value = $this->value;
-    $name = $this->name;
-
+  /**
+   * Get list options.
+   *
+   * @return array
+   */
+  public function getOptions(): array {
     // Initiate CiviCRM
     define('CIVICRM_SETTINGS_PATH', JPATH_ROOT . '/' . 'administrator/components/com_civicrm/civicrm.settings.php');
     require_once CIVICRM_SETTINGS_PATH;
@@ -69,9 +59,7 @@ class JFormFieldCiviContribPagesPCP extends _J3_to_J4_JFormFieldCiviContribPages
     require_once 'CRM/Core/Config.php';
     $config = CRM_Core_Config::singleton();
 
-    // Get list of all ContribPagesPCP  and assign to options array
-    $options = array();
-
+    $options = [];
     $query = "
       SELECT cp.id, cp.title 
       FROM civicrm_contribution_page cp, civicrm_pcp_block pcp 
@@ -81,17 +69,13 @@ class JFormFieldCiviContribPagesPCP extends _J3_to_J4_JFormFieldCiviContribPages
         AND pcp.entity_table = 'civicrm_contribution_page'
       ORDER BY cp.title;
     ";
-
     $dao = CRM_Core_DAO::executeQuery($query);
-    $htmlClass = version_compare(JVERSION, '4.0', 'ge') ? '\Joomla\CMS\HTML\HTMLHelper' : 'JHtml';
 
     while ($dao->fetch()) {
-      $options[] = $htmlClass::_('select.option', $dao->id, $dao->title);
+      $options[$dao->id] = $dao->title;
     }
 
-    return $htmlClass::_('select.genericlist', $options, $name,
-      NULL, 'value', 'text', $value, $name
-    );
+    return $options;
   }
 }
 
